@@ -2,30 +2,54 @@
 
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { Recycle, Leaf, Flower2, Globe } from "lucide-react"
+import { Sparkles, ChefHat, Flower2, Globe, Clock } from "lucide-react"
+import { useLang } from "./language-context"
 
-const features = [
-  {
-    icon: Recycle,
-    title: "Empaque Ecológico",
-    description: "Materiales reciclables y biodegradables"
+const featuresData = {
+  es: [
+    { icon: Sparkles, title: "Presentación Premium", description: "Cada detalle cuidado con esmero" },
+    { icon: ChefHat, title: "Sabor Casero", description: "Recetas de casa, preparadas con cariño" },
+    { icon: Flower2, title: "Hecho a Mano", description: "Preparado artesanalmente con dedicación" },
+    { icon: Globe, title: "Ingredientes Locales", description: "Productores locales certificados" },
+  ],
+  en: [
+    { icon: Sparkles, title: "Premium Presentation", description: "Every detail carefully crafted" },
+    { icon: ChefHat, title: "Homemade Flavor", description: "Home recipes, prepared with care" },
+    { icon: Flower2, title: "Handmade", description: "Artisanally prepared with dedication" },
+    { icon: Globe, title: "Local Ingredients", description: "Certified local producers" },
+  ],
+}
+
+const translations = {
+  es: {
+    eyebrow: "Por Qué Aleymi",
+    title: "Sabor que inspira.",
+    body: "Creemos que cada bocadito debe ser una experiencia única. Cada producto está elaborado con intención y amor por lo que haces.",
+    bentoTitle: "100% Artesanal",
+    bentoSub: "100% Para Ti",
+    bullet1: "Preparado en el Día",
+    bullet2: "Ingredientes Seleccionados",
+    bullet3: "Productores Locales",
+    ecoTitle: "Presentación",
+    ecoSub: "Premium",
+    overlayTitle: "100% Artesanal",
+    overlayBody: "Elaborados exclusivamente con ingredientes frescos y recetas tradicionales.",
   },
-  {
-    icon: Leaf,
-    title: "100% Natural",
-    description: "Sin químicos ni conservantes artificiales"
+  en: {
+    eyebrow: "Why Aleymi",
+    title: "Flavor that inspires.",
+    body: "We believe each bite should be a unique experience. Every product is crafted with intention and love for what you do.",
+    bentoTitle: "100% Artisan",
+    bentoSub: "100% For You",
+    bullet1: "Freshly Prepared",
+    bullet2: "Handpicked Ingredients",
+    bullet3: "Local Producers",
+    ecoTitle: "Presentation",
+    ecoSub: "Premium",
+    overlayTitle: "100% Artisan",
+    overlayBody: "Made exclusively with fresh ingredients and traditional recipes.",
   },
-  {
-    icon: Flower2,
-    title: "Hecho a Mano",
-    description: "Preparado artesanalmente con dedicación"
-  },
-  {
-    icon: Globe,
-    title: "Ingredientes Locales",
-    description: "Productores locales certificados"
-  }
-]
+}
 
 export function FeatureSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -34,6 +58,9 @@ export function FeatureSection() {
   const bentoRef = useRef<HTMLDivElement>(null)
   const videoSectionRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
+  const { lang } = useLang()
+  const features = featuresData[lang]
+  const tx = translations[lang]
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -110,7 +137,7 @@ export function FeatureSection() {
               playsInline
               className="absolute inset-0 w-full h-full object-cover"
             >
-              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/c4baaf67-b900-4b90-af2a-daf25a5a4b78-5un5eTbj9Z67qEtEdsQwlYrte9dZM9.mp4" type="video/mp4" />
+              <source src="/artesanal.mp4" type="video/mp4" />
             </video>
             {/* Overlay Card */}
             <div className="absolute bottom-8 left-8 right-8 bg-white p-6 shadow-lg rounded-xl">
@@ -120,10 +147,10 @@ export function FeatureSection() {
                 </div>
                 <div>
                   <h3 className="text-xl text-foreground mb-2 font-medium">
-                    100% <span className="">Artesanal</span>
+                    {tx.overlayTitle}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Elaborados exclusivamente con ingredientes frescos y recetas tradicionales.
+                    {tx.overlayBody}
                   </p>
                 </div>
               </div>
@@ -139,7 +166,7 @@ export function FeatureSection() {
           >
             {/* Background Image */}
             <Image
-              src="/images/products/0ed61900-dd29-4dd2-bc2d-abc2db54c352.png"
+              src="/naturales2.jpg  "
               alt="Natural ingredients"
               fill
               className="object-cover"
@@ -147,25 +174,25 @@ export function FeatureSection() {
 
             
             <div className="relative z-10">
-              <h3 className="text-3xl md:text-4xl text-white mb-2">
-                100% Natural
+              <h3 className="text-3xl md:text-4xl text-black mb-2">
+                {tx.bentoTitle}
               </h3>
-              <h3 className="text-2xl md:text-3xl text-white/70 mb-4">
-                100% Para Ti
+              <h3 className="text-2xl md:text-3xl text-black/70 mb-4">
+                {tx.bentoSub}
               </h3>
               
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-white/90 text-sm">
-                  <Leaf className="w-4 h-4 flex-shrink-0" />
-                  <span>Sin Conservantes Artificiales</span>
+                <div className="flex items-center gap-2 text-black/90 text-sm">
+                  <Clock className="w-4 h-4 flex-shrink-0" />
+                  <span>{tx.bullet1}</span>
                 </div>
-                <div className="flex items-center gap-2 text-white/90 text-sm">
+                <div className="flex items-center gap-2 text-black/90 text-sm">
                   <Flower2 className="w-4 h-4 flex-shrink-0" />
-                  <span>Ingredientes Frescos</span>
+                  <span>{tx.bullet2}</span>
                 </div>
-                <div className="flex items-center gap-2 text-white/90 text-sm">
+                <div className="flex items-center gap-2 text-black/90 text-sm">
                   <Globe className="w-4 h-4 flex-shrink-0" />
-                  <span>Productores Locales</span>
+                  <span>{tx.bullet3}</span>
                 </div>
               </div>
             </div>
@@ -193,13 +220,13 @@ export function FeatureSection() {
             
             <div className="relative z-10 flex flex-col justify-center h-full text-left items-start">
               <div className="inline-flex items-center justify-center w-10 h-10 mb-3">
-                <Recycle className="w-8 h-8 text-black" />
+                <Sparkles className="w-8 h-8 text-black" />
               </div>
               <h3 className="font-sans text-base mb-1 text-black">
-                Eco-Friendly
+                {tx.ecoSub}
               </h3>
               <h3 className="text-2xl md:text-3xl mb-2 text-black">
-                Empaque
+                {tx.ecoTitle}
               </h3>
             </div>
           </div>
@@ -235,14 +262,13 @@ export function FeatureSection() {
             style={{ transitionDelay: '100ms' }}
           >
             <span className={`text-sm tracking-[0.3em] uppercase text-primary mb-4 block ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.2s', animationFillMode: 'forwards' } : {}}>
-              Por Qué Aleymi
+              {tx.eyebrow}
             </span>
             <h2 className={`font-serif text-4xl leading-tight text-foreground mb-6 text-balance md:text-7xl ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.4s', animationFillMode: 'forwards' } : {}}>
-              Sabor que inspira.
+              {tx.title}
             </h2>
             <p className={`text-lg text-muted-foreground leading-relaxed mb-10 max-w-md ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.6s', animationFillMode: 'forwards' } : {}}>
-              Creemos que cada bocadito debe ser una experiencia única. 
-              Cada producto está elaborado con intención y amor por lo que haces.
+              {tx.body}
             </p>
 
             {/* Feature Cards */}

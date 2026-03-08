@@ -6,6 +6,28 @@ import Link from "next/link"
 import { ShoppingBag, SlidersHorizontal, X } from "lucide-react"
 import { Header } from "@/components/boty/header"
 import { Footer } from "@/components/boty/footer"
+import { useLang } from "@/components/boty/language-context"
+
+const t = {
+  es: {
+    eyebrow: "Nuestra Colección",
+    title: "Todos los Productos",
+    subtitle: "Descubre nuestra variedad de bocaditos artesanales",
+    filters: "Filtros",
+    categories: { todos: "Todos", salados: "Salados", dulces: "Dulces", tablas: "Tablas", packs: "Packs" },
+    product: "producto",
+    products: "productos",
+  },
+  en: {
+    eyebrow: "Our Collection",
+    title: "All Products",
+    subtitle: "Discover our variety of artisan bites",
+    filters: "Filters",
+    categories: { todos: "All", salados: "Savory", dulces: "Sweet", tablas: "Boards", packs: "Packs" },
+    product: "product",
+    products: "products",
+  },
+}
 
 const products = [
   // Salados
@@ -15,7 +37,7 @@ const products = [
     description: "Rellenas de carne, pollo o jamón y queso",
     price: 25,
     originalPrice: null,
-    image: "/images/products/serum-bottles-1.png",
+    image: "/images/products/producto1.png",
     badge: "Popular",
     category: "salados"
   },
@@ -25,7 +47,7 @@ const products = [
     description: "Variedad de rellenos gourmet",
     price: 22,
     originalPrice: null,
-    image: "/images/products/eye-serum-bottles.png",
+    image: "/images/products/producto1.png",
     badge: null,
     category: "salados"
   },
@@ -161,6 +183,8 @@ export default function ShopPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const gridRef = useRef<HTMLDivElement>(null)
+  const { lang } = useLang()
+  const tx = t[lang]
 
   const filteredProducts = selectedCategory === "todos"
     ? products
@@ -203,13 +227,13 @@ export default function ShopPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <span className="text-sm tracking-[0.3em] uppercase text-primary mb-4 block">
-              Nuestra Colección
+              {tx.eyebrow}
             </span>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground mb-4 text-balance">
-              Todos los Productos
+              {tx.title}
             </h1>
             <p className="text-lg text-muted-foreground max-w-md mx-auto">
-              Descubre nuestra variedad de bocaditos artesanales
+              {tx.subtitle}
             </p>
           </div>
 
@@ -221,7 +245,7 @@ export default function ShopPage() {
               className="lg:hidden inline-flex items-center gap-2 text-sm text-foreground"
             >
               <SlidersHorizontal className="w-4 h-4" />
-              Filtros
+              {tx.filters}
             </button>
 
             {/* Desktop Categories */}
@@ -237,13 +261,13 @@ export default function ShopPage() {
                       : "bg-card text-foreground/70 hover:text-foreground boty-shadow"
                   }`}
                 >
-                  {category}
+                  {tx.categories[category as keyof typeof tx.categories]}
                 </button>
               ))}
             </div>
 
             <span className="text-sm text-muted-foreground">
-              {filteredProducts.length} {filteredProducts.length === 1 ? "producto" : "productos"}
+              {filteredProducts.length} {filteredProducts.length === 1 ? tx.product : tx.products}
             </span>
           </div>
 
@@ -276,7 +300,7 @@ export default function ShopPage() {
                           : "bg-card text-foreground boty-shadow"
                       }`}
                     >
-                      {category}
+                      {tx.categories[category as keyof typeof tx.categories]}
                     </button>
                   ))}
                 </div>

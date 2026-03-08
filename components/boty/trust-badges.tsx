@@ -1,34 +1,29 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Leaf, Droplets, Sparkles, Flower2 } from "lucide-react"
+import { Droplets, Sparkles, Flower2, ChefHat } from "lucide-react"
+import { useLang } from "./language-context"
 
-const badges = [
-  {
-    icon: Leaf,
-    title: "Ingredientes Frescos",
-    description: "Productos 100% naturales"
-  },
-  {
-    icon: Droplets,
-    title: "Recetas Artesanales",
-    description: "Preparados con dedicación"
-  },
-  {
-    icon: Sparkles,
-    title: "Sabor Único",
-    description: "Combinaciones exclusivas"
-  },
-  {
-    icon: Flower2,
-    title: "Hecho a Mano",
-    description: "Con amor en cada bocado"
-  }
-]
+const badgesData = {
+  es: [
+    { icon: ChefHat, title: "Ingredientes Frescos", description: "Seleccionados cada día con cuidado" },
+    { icon: Droplets, title: "Recetas Artesanales", description: "Preparados con dedicación" },
+    { icon: Sparkles, title: "Sabor Único", description: "Combinaciones exclusivas" },
+    { icon: Flower2, title: "Hecho a Mano", description: "Con amor en cada bocado" },
+  ],
+  en: [
+    { icon: ChefHat, title: "Fresh Ingredients", description: "Carefully selected every day" },
+    { icon: Droplets, title: "Artisan Recipes", description: "Prepared with dedication" },
+    { icon: Sparkles, title: "Unique Flavor", description: "Exclusive combinations" },
+    { icon: Flower2, title: "Handmade", description: "With love in every bite" },
+  ],
+}
 
 export function TrustBadges() {
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLDivElement>(null)
+  const { lang } = useLang()
+  const badges = badgesData[lang]
 
   useEffect(() => {
     const observer = new IntersectionObserver(

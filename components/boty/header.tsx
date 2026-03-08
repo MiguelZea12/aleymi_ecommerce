@@ -5,10 +5,16 @@ import Link from "next/link"
 import { Menu, X, ShoppingBag, Search, User, Globe } from "lucide-react"
 import { CartDrawer } from "./cart-drawer"
 import { useCart } from "./cart-context"
+import { useLang } from "./language-context"
+
+const t = {
+  es: { shop: "Tienda", about: "Nosotros", menu: "Menú", account: "Cuenta", search: "Buscar", langLabel: "ES", langFull: "Español" },
+  en: { shop: "Shop", about: "About", menu: "Menu", account: "Account", search: "Search", langLabel: "EN", langFull: "English" },
+}
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [lang, setLang] = useState<'es' | 'en'>('es')
+  const { lang, toggleLang } = useLang()
   const { setIsOpen, itemCount } = useCart()
 
   return (
@@ -31,19 +37,19 @@ export function Header() {
               href="/shop"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
-              Tienda
+              {t[lang].shop}
             </Link>
             <Link
               href="/"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
-              Nosotros
+              {t[lang].about}
             </Link>
             <Link
               href="/"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
-              Menú
+              {t[lang].menu}
             </Link>
           </div>
 
@@ -56,24 +62,24 @@ export function Header() {
           <div className="flex items-center gap-4">
             <button
               type="button"
-              onClick={() => setLang(lang === 'es' ? 'en' : 'es')}
+              onClick={toggleLang}
               className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 text-foreground/70 hover:text-foreground boty-transition rounded-full text-xs font-medium"
               aria-label="Cambiar idioma"
             >
               <Globe className="w-3.5 h-3.5" />
-              {lang === 'es' ? 'ES' : 'EN'}
+              {t[lang].langLabel}
             </button>
             <button
               type="button"
               className="p-2 text-foreground/70 hover:text-foreground boty-transition"
-              aria-label="Buscar"
+              aria-label={t[lang].search}
             >
               <Search className="w-5 h-5" />
             </button>
             <Link
               href="/account"
               className="hidden sm:block p-2 text-foreground/70 hover:text-foreground boty-transition"
-              aria-label="Cuenta"
+              aria-label={t[lang].account}
             >
               <User className="w-5 h-5" />
             </Link>
@@ -106,33 +112,33 @@ export function Header() {
               href="/shop"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
-              Tienda
+              {t[lang].shop}
             </Link>
             <Link
               href="/"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
-              Nosotros
+              {t[lang].about}
             </Link>
             <Link
               href="/"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
-              Menú
+              {t[lang].menu}
             </Link>
             <Link
               href="/"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
-              Cuenta
+              {t[lang].account}
             </Link>
             <button
               type="button"
-              onClick={() => setLang(lang === 'es' ? 'en' : 'es')}
+              onClick={toggleLang}
               className="sm:hidden flex items-center gap-1.5 text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
               <Globe className="w-4 h-4" />
-              {lang === 'es' ? 'Español' : 'English'}
+              {t[lang].langFull}
             </button>
           </div>
         </div>

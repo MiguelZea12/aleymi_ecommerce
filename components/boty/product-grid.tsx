@@ -16,7 +16,7 @@ const products = [
     description: "Rellenas de carne, pollo o jamón y queso",
     price: 25,
     originalPrice: null,
-    image: "/images/products/serum-bottles-1.png",
+    image: "/images/products/product2.png",
     badge: "Popular",
     category: "salado" as Category
   },
@@ -26,7 +26,7 @@ const products = [
     description: "Variedad de rellenos gourmet",
     price: 22,
     originalPrice: null,
-    image: "/images/products/eye-serum-bottles.png",
+    image: "/images/products/producto1.png",
     badge: null,
     category: "salado" as Category
   },
@@ -36,7 +36,7 @@ const products = [
     description: "Tomate cherry, mozzarella y albahaca",
     price: 28,
     originalPrice: null,
-    image: "/images/products/amber-dropper-bottles.png",
+    image: "/images/products/producto1.png",
     badge: "Nuevo",
     category: "salado" as Category
   },
@@ -46,7 +46,7 @@ const products = [
     description: "Crujientes y cremosas por dentro",
     price: 20,
     originalPrice: 25,
-    image: "/images/products/spray-bottles.png",
+    image: "/images/products/producto1.png",
     badge: "Oferta",
     category: "salado" as Category
   },
@@ -57,7 +57,7 @@ const products = [
     description: "Rellenos de manjar blanco",
     price: 18,
     originalPrice: null,
-    image: "/images/products/cream-jars-colored.png",
+    image: "/images/products/producto1.png",
     badge: null,
     category: "dulce" as Category
   },
@@ -67,17 +67,17 @@ const products = [
     description: "Rellenos de crema pastelera",
     price: 22,
     originalPrice: 28,
-    image: "/images/products/tube-bottles.png",
+    image: "/images/products/producto1.png",
     badge: "Oferta",
     category: "dulce" as Category
   },
   {
     id: "mini-brownies",
     name: "Mini Brownies",
-    description: "Chocolate belga con nueces",
+    description: "/images/products/producto1.png",
     price: 20,
     originalPrice: null,
-    image: "/images/products/jars-wooden-lid.png",
+    image: "/images/products/producto1.png",
     badge: "Popular",
     category: "dulce" as Category
   },
@@ -87,7 +87,7 @@ const products = [
     description: "Sabores variados del día",
     price: 30,
     originalPrice: null,
-    image: "/images/products/pump-bottles-lavender.png",
+    image: "/images/products/producto1.png",
     badge: null,
     category: "dulce" as Category
   },
@@ -98,7 +98,7 @@ const products = [
     description: "Quesos, embutidos y frutos secos",
     price: 45,
     originalPrice: null,
-    image: "/images/products/amber-dropper-bottles.png",
+    image: "/images/products/producto1.png",
     badge: "Nuevo",
     category: "tabla" as Category
   },
@@ -108,7 +108,7 @@ const products = [
     description: "Selección de quesos artesanales",
     price: 38,
     originalPrice: null,
-    image: "/images/products/serum-bottles-1.png",
+    image: "/images/products/producto1.png",
     badge: null,
     category: "tabla" as Category
   },
@@ -118,7 +118,7 @@ const products = [
     description: "Frutas frescas de temporada",
     price: 35,
     originalPrice: null,
-    image: "/images/products/spray-bottles.png",
+    image: "/images/products/producto1.png",
     badge: null,
     category: "tabla" as Category
   },
@@ -128,7 +128,7 @@ const products = [
     description: "La selección premium completa",
     price: 65,
     originalPrice: null,
-    image: "/images/products/pump-bottles-cream.png",
+    image: "/images/products/producto1.png",
     badge: "Popular",
     category: "tabla" as Category
   }

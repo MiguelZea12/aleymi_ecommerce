@@ -2,30 +2,82 @@
 
 import Link from "next/link"
 import { Instagram, Facebook, Twitter } from "lucide-react"
+import { useLang } from "./language-context"
 
 const footerLinks = {
-  tienda: [
-    { name: "Todos los Productos", href: "/shop" },
-    { name: "Bocaditos Salados", href: "/shop?category=salados" },
-    { name: "Bocaditos Dulces", href: "/shop?category=dulces" },
-    { name: "Tablas", href: "/shop?category=tablas" },
-    { name: "Packs Especiales", href: "/shop" }
-  ],
-  nosotros: [
-    { name: "Nuestra Historia", href: "/" },
-    { name: "Ingredientes", href: "/" },
-    { name: "Catering", href: "/" },
-    { name: "Blog", href: "/" }
-  ],
-  soporte: [
-    { name: "Contáctanos", href: "/" },
-    { name: "Preguntas Frecuentes", href: "/" },
-    { name: "Envíos", href: "/" },
-    { name: "Devoluciones", href: "/" }
-  ]
+  es: {
+    tienda: {
+      title: "Tienda",
+      links: [
+        { name: "Todos los Productos", href: "/shop" },
+        { name: "Bocaditos Salados", href: "/shop?category=salados" },
+        { name: "Bocaditos Dulces", href: "/shop?category=dulces" },
+        { name: "Tablas", href: "/shop?category=tablas" },
+        { name: "Packs Especiales", href: "/shop" },
+      ],
+    },
+    nosotros: {
+      title: "Nosotros",
+      links: [
+        { name: "Nuestra Historia", href: "/" },
+        { name: "Ingredientes", href: "/" },
+        { name: "Catering", href: "/" },
+        { name: "Blog", href: "/" },
+      ],
+    },
+    soporte: {
+      title: "Soporte",
+      links: [
+        { name: "Contáctanos", href: "/" },
+        { name: "Preguntas Frecuentes", href: "/" },
+        { name: "Envíos", href: "/" },
+        { name: "Devoluciones", href: "/" },
+      ],
+    },
+    tagline: "Bocaditos artesanales preparados con los mejores ingredientes para tus momentos especiales.",
+    rights: "Todos los derechos reservados.",
+    privacy: "Política de Privacidad",
+    terms: "Términos de Servicio",
+  },
+  en: {
+    tienda: {
+      title: "Shop",
+      links: [
+        { name: "All Products", href: "/shop" },
+        { name: "Savory Bites", href: "/shop?category=salados" },
+        { name: "Sweet Bites", href: "/shop?category=dulces" },
+        { name: "Boards", href: "/shop?category=tablas" },
+        { name: "Special Packs", href: "/shop" },
+      ],
+    },
+    nosotros: {
+      title: "About",
+      links: [
+        { name: "Our Story", href: "/" },
+        { name: "Ingredients", href: "/" },
+        { name: "Catering", href: "/" },
+        { name: "Blog", href: "/" },
+      ],
+    },
+    soporte: {
+      title: "Support",
+      links: [
+        { name: "Contact Us", href: "/" },
+        { name: "FAQ", href: "/" },
+        { name: "Shipping", href: "/" },
+        { name: "Returns", href: "/" },
+      ],
+    },
+    tagline: "Artisan bites made with the finest ingredients for your special moments.",
+    rights: "All rights reserved.",
+    privacy: "Privacy Policy",
+    terms: "Terms of Service",
+  },
 }
 
 export function Footer() {
+  const { lang } = useLang()
+  const fl = footerLinks[lang]
   return (
     <footer className="bg-card pt-20 pb-10 relative overflow-hidden">
       {/* Giant Background Text */}
@@ -41,7 +93,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <h2 className="font-serif text-3xl text-foreground mb-4">Aleymi</h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-              Bocaditos artesanales preparados con los mejores ingredientes para tus momentos especiales.
+              {fl.tagline}
             </p>
             <div className="flex gap-4">
               <a
@@ -74,11 +126,11 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Tienda Links */}
+          {/* Shop Links */}
           <div>
-            <h3 className="font-medium text-foreground mb-4">Tienda</h3>
+            <h3 className="font-medium text-foreground mb-4">{fl.tienda.title}</h3>
             <ul className="space-y-3">
-              {footerLinks.tienda.map((link) => (
+              {fl.tienda.links.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -91,11 +143,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Nosotros Links */}
+          {/* About Links */}
           <div>
-            <h3 className="font-medium text-foreground mb-4">Nosotros</h3>
+            <h3 className="font-medium text-foreground mb-4">{fl.nosotros.title}</h3>
             <ul className="space-y-3">
-              {footerLinks.nosotros.map((link) => (
+              {fl.nosotros.links.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -108,11 +160,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Soporte Links */}
+          {/* Support Links */}
           <div>
-            <h3 className="font-medium text-foreground mb-4">Soporte</h3>
+            <h3 className="font-medium text-foreground mb-4">{fl.soporte.title}</h3>
             <ul className="space-y-3">
-              {footerLinks.soporte.map((link) => (
+              {fl.soporte.links.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -130,14 +182,14 @@ export function Footer() {
         <div className="pt-10 border-t border-border/50">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Aleymi. Todos los derechos reservados.
+              © {new Date().getFullYear()} Aleymi. {fl.rights}
             </p>
             <div className="flex gap-6">
               <Link href="/" className="text-sm text-muted-foreground hover:text-foreground boty-transition">
-                Política de Privacidad
+                {fl.privacy}
               </Link>
               <Link href="/" className="text-sm text-muted-foreground hover:text-foreground boty-transition">
-                Términos de Servicio
+                {fl.terms}
               </Link>
             </div>
           </div>

@@ -4,9 +4,10 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { ChevronLeft, Minus, Plus, ChevronDown, Leaf, Heart, Award, Recycle, Star, Check } from "lucide-react"
+import { ChevronLeft, Minus, Plus, ChevronDown, ChefHat, Heart, Award, Clock, Star, Check } from "lucide-react"
 import { Header } from "@/components/boty/header"
 import { Footer } from "@/components/boty/footer"
+import { useLang } from "@/components/boty/language-context"
 
 const products: Record<string, {
   id: string
@@ -29,7 +30,7 @@ const products: Record<string, {
     description: "Deliciosas mini empanadas con masa crujiente y rellenos generosos. Perfectas para cualquier reunión o evento.",
     price: 25,
     originalPrice: null,
-    image: "/images/products/serum-bottles-1.png",
+    image: "/images/products/producto1.png",
     sizes: ["12 unidades", "24 unidades"],
     details: "Nuestras mini empanadas están elaboradas con masa hojaldrada artesanal y rellenos preparados con ingredientes frescos del día. Disponibles en carne, pollo y jamón y queso.",
     howToUse: "Servir a temperatura ambiente o calentar en horno a 180°C por 5 minutos para una textura extra crujiente. Ideal como aperitivo.",
@@ -80,12 +81,20 @@ const products: Record<string, {
   }
 }
 
-const benefits = [
-  { icon: Leaf, label: "100% Natural" },
-  { icon: Heart, label: "Hecho con Amor" },
-  { icon: Recycle, label: "Eco-Friendly" },
-  { icon: Award, label: "Calidad Premium" }
-]
+const benefits = {
+  es: [
+    { icon: ChefHat, label: "Receta Artesanal" },
+    { icon: Heart, label: "Hecho con Amor" },
+    { icon: Clock, label: "Listo para Servir" },
+    { icon: Award, label: "Calidad Premium" },
+  ],
+  en: [
+    { icon: ChefHat, label: "Artisan Recipe" },
+    { icon: Heart, label: "Made with Love" },
+    { icon: Clock, label: "Ready to Serve" },
+    { icon: Award, label: "Premium Quality" },
+  ],
+}
 
 type AccordionSection = "details" | "howToUse" | "ingredients" | "delivery"
 
@@ -93,6 +102,7 @@ export default function ProductPage() {
   const params = useParams()
   const productId = params.id as string
   const product = products[productId] || products["mini-empanadas"]
+  const { lang } = useLang()
 
   const [selectedSize, setSelectedSize] = useState(product.sizes[0])
   const [quantity, setQuantity] = useState(1)
@@ -113,10 +123,10 @@ export default function ProductPage() {
   }
 
   const accordionItems: { key: AccordionSection; title: string; content: string }[] = [
-    { key: "details", title: "Detalles", content: product.details },
-    { key: "howToUse", title: "Cómo Servir", content: product.howToUse },
-    { key: "ingredients", title: "Ingredientes", content: product.ingredients },
-    { key: "delivery", title: "Envío y Devoluciones", content: product.delivery }
+    { key: "details", title: lang === 'es' ? "Detalles" : "Details", content: product.details },
+    { key: "howToUse", title: lang === 'es' ? "Cómo Servir" : "How to Serve", content: product.howToUse },
+    { key: "ingredients", title: lang === 'es' ? "Ingredientes" : "Ingredients", content: product.ingredients },
+    { key: "delivery", title: lang === 'es' ? "Envío y Devoluciones" : "Shipping & Returns", content: product.delivery },
   ]
 
   return (
@@ -131,7 +141,7 @@ export default function ProductPage() {
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground boty-transition mb-8"
           >
             <ChevronLeft className="w-4 h-4" />
-            Volver a la Tienda
+            {lang === 'es' ? 'Volver a la Tienda' : 'Back to Shop'}
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
@@ -167,7 +177,7 @@ export default function ProductPage() {
                       <Star key={i} className="w-4 h-4 fill-primary text-primary" />
                     ))}
                   </div>
-                  <span className="text-sm text-muted-foreground">(128 reseñas)</span>
+                  <span className="text-sm text-muted-foreground">({lang === 'es' ? '128 reseñas' : '128 reviews'})</span>
                 </div>
 
                 <p className="text-foreground/80 leading-relaxed">
@@ -187,7 +197,7 @@ export default function ProductPage() {
 
               {/* Size Selector */}
               <div className="mb-6">
-                <label className="text-sm font-medium text-foreground mb-3 block">Tamaño</label>
+                <label className="text-sm font-medium text-foreground mb-3 block">{lang === 'es' ? 'Tamaño' : 'Size'}</label>
                 <div className="flex gap-3">
                   {product.sizes.map((size) => (
                     <button
@@ -208,7 +218,7 @@ export default function ProductPage() {
 
               {/* Quantity Selector */}
               <div className="mb-8">
-                <label className="text-sm font-medium text-foreground mb-3 block">Cantidad</label>
+                <label className="text-sm font-medium text-foreground mb-3 block">{lang === 'es' ? 'Cantidad' : 'Quantity'}</label>
                 <div className="inline-flex items-center gap-4 bg-card rounded-full px-2 py-2 boty-shadow">
                   <button
                     type="button"
@@ -244,23 +254,23 @@ export default function ProductPage() {
                   {isAdded ? (
                     <>
                       <Check className="w-4 h-4" />
-                      Añadido al Carrito
+                      {lang === 'es' ? 'Añadido al Carrito' : 'Added to Cart'}
                     </>
                   ) : (
-                    "Añadir al Carrito"
+                    lang === 'es' ? 'Añadir al Carrito' : 'Add to Cart'
                   )}
                 </button>
                 <button
                   type="button"
                   className="flex-1 inline-flex items-center justify-center gap-2 bg-transparent border border-foreground/20 text-foreground px-8 py-4 rounded-full text-sm tracking-wide boty-transition hover:bg-foreground/5"
                 >
-                  Comprar Ahora
+                  {lang === 'es' ? 'Comprar Ahora' : 'Buy Now'}
                 </button>
               </div>
 
               {/* Benefits */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-                {benefits.map((benefit) => (
+                {benefits[lang].map((benefit) => (
                   <div
                     key={benefit.label}
                     className="flex flex-col items-center gap-2 p-4 boty-shadow bg-transparent shadow-none rounded-md"
