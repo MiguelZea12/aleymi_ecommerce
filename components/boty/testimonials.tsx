@@ -6,152 +6,26 @@ import { useLang } from "./language-context"
 
 const testimonialsData = {
   es: [
-    {
-      id: 1,
-      name: "Alejandro Z.",
-      location: "Quito, Ecuador",
-      rating: 5,
-      text: "Los bocaditos de Aleymi hicieron que mi reunión fuera un éxito total. Todos querían saber dónde los conseguí.",
-      product: "Tabla Clásica"
-    },
-    {
-      id: 2,
-      name: "Alejandra Z.",
-      location: "Guayaquil, Ecuador",
-      rating: 5,
-      text: "Por fin encontré bocaditos que saben caseros de verdad. Los ingredientes frescos hacen toda la diferencia.",
-      product: "Mini Empanadas"
-    },
-    {
-      id: 3,
-      name: "Anthonella C.",
-      location: "Cuenca, Ecuador",
-      rating: 5,
-      text: "Las tablas de quesos son espectaculares. La presentación es hermosa y el sabor es increíble.",
-      product: "Tabla de Quesos"
-    },
-    {
-      id: 4,
-      name: "Aldair T.",
-      location: "Ambato, Ecuador",
-      rating: 5,
-      text: "Pedí para un evento corporativo y todos quedaron encantados. La calidad es insuperable.",
-      product: "Pack Corporativo"
-    },
-    {
-      id: 5,
-      name: "Malena P.",
-      location: "Riobamba, Ecuador",
-      rating: 5,
-      text: "Me encanta que todo es fresco y artesanal. El empaque es muy bonito e impecable.",
-      product: "Bocaditos Dulces"
-    },
-    {
-      id: 6,
-      name: "Miguel Z.",
-      location: "Loja, Ecuador",
-      rating: 5,
-      text: "Los mini sándwiches son perfectos para las reuniones del trabajo. Siempre pido de más porque vuelan.",
-      product: "Mini Sándwiches"
-    },
-    {
-      id: 7,
-      name: "Sebastian Z.",
-      location: "Ibarra, Ecuador",
-      rating: 5,
-      text: "La variedad de sabores es increíble. Cada bocadito tiene un toque especial que lo hace único.",
-      product: "Tabla Gourmet"
-    },
-    {
-      id: 8,
-      name: "Christian S.",
-      location: "Manta, Ecuador",
-      rating: 5,
-      text: "Pedí para el cumpleaños de mi hija y fue todo un éxito. Los bocaditos dulces son deliciosos.",
-      product: "Pack Fiesta"
-    },
-    {
-      id: 9,
-      name: "Cintia I.",
-      location: "Santo Domingo, Ecuador",
-      rating: 5,
-      text: "La atención al cliente es excelente y los bocaditos siempre llegan frescos. ¡100% recomendados!",
-      product: "Tabla Clásica"
-    }
+    { id: 1, name: "Alejandro Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Los bocaditos de Aleymi hicieron que mi reunión fuera un éxito total. Pedí la bandeja completa y todos querían saber dónde la conseguí.", product: "Bandeja Completa" },
+    { id: 2, name: "Alejandra Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Por fin encontré bocaditos que saben caseros de verdad. Las empanadillas son mis favoritas, siempre las pido.", product: "Mini Empanadillas" },
+    { id: 3, name: "Anthonella C.", location: "Portoviejo, Ecuador", rating: 5, text: "Las tartaletas de camarón son espectaculares. La presentación es hermosa y el sabor es increíble.", product: "Tartaletas" },
+    { id: 4, name: "Aldair T.", location: "Portoviejo, Ecuador", rating: 5, text: "Pedí la bandeja completa para un evento corporativo y todos quedaron encantados. La calidad es insuperable.", product: "Bandeja Completa" },
+    { id: 5, name: "Malena P.", location: "Portoviejo, Ecuador", rating: 5, text: "Las mini hamburguesas son perfectas para mis reuniones. Todo fresco y artesanal, la presentación impecable.", product: "Mini Hamburguesas" },
+    { id: 6, name: "Miguel Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Los mini sanduchitos son perfectos para las reuniones del trabajo. Siempre pido de más porque vuelan.", product: "Mini Sanduchitos" },
+    { id: 7, name: "Sebastian Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Los mini hot dog son increíbles. Cada uno tiene un toque especial que los hace únicos.", product: "Mini Hot Dog" },
+    { id: 8, name: "Christian S.", location: "Portoviejo, Ecuador", rating: 5, text: "Pedí bolas de carne para el cumpleaños de mi hija y fue todo un éxito. ¡Desaparecieron en minutos!", product: "Bolas de Carne" },
+    { id: 9, name: "Cintia I.", location: "Portoviejo, Ecuador", rating: 5, text: "La atención es excelente y los bocaditos siempre llegan frescos. Los dedos de queso son una delicia.", product: "Dedos de Queso" },
   ],
   en: [
-    {
-      id: 1,
-      name: "Alejandro Z.",
-      location: "Quito, Ecuador",
-      rating: 5,
-      text: "Aleymi's bites made my meeting a total success. Everyone wanted to know where I got them.",
-      product: "Classic Board"
-    },
-    {
-      id: 2,
-      name: "Alejandra Z.",
-      location: "Guayaquil, Ecuador",
-      rating: 5,
-      text: "I finally found bites that truly taste homemade. The fresh ingredients make all the difference.",
-      product: "Mini Empanadas"
-    },
-    {
-      id: 3,
-      name: "Anthonella C.",
-      location: "Cuenca, Ecuador",
-      rating: 5,
-      text: "The cheese boards are spectacular. The presentation is beautiful and the flavor is amazing.",
-      product: "Cheese Board"
-    },
-    {
-      id: 4,
-      name: "Aldair T.",
-      location: "Ambato, Ecuador",
-      rating: 5,
-      text: "I ordered for a corporate event and everyone was delighted. The quality is unmatched.",
-      product: "Corporate Pack"
-    },
-    {
-      id: 5,
-      name: "Malena P.",
-      location: "Riobamba, Ecuador",
-      rating: 5,
-      text: "I love that everything is fresh and artisan. The packaging is also very pretty and impeccable.",
-      product: "Sweet Bites"
-    },
-    {
-      id: 6,
-      name: "Miguel Z.",
-      location: "Loja, Ecuador",
-      rating: 5,
-      text: "The mini sandwiches are perfect for work meetings. I always order extra because they fly.",
-      product: "Mini Sandwiches"
-    },
-    {
-      id: 7,
-      name: "Sebastian Z.",
-      location: "Ibarra, Ecuador",
-      rating: 5,
-      text: "The variety of flavors is incredible. Each bite has a special touch that makes it unique.",
-      product: "Gourmet Board"
-    },
-    {
-      id: 8,
-      name: "Christian S.",
-      location: "Manta, Ecuador",
-      rating: 5,
-      text: "I ordered for my daughter's birthday and it was a total hit. The sweet bites are delicious.",
-      product: "Party Pack"
-    },
-    {
-      id: 9,
-      name: "Cintia I.",
-      location: "Santo Domingo, Ecuador",
-      rating: 5,
-      text: "Customer service is excellent and the bites always arrive fresh. 100% recommended!",
-      product: "Classic Board"
-    }
+    { id: 1, name: "Alejandro Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Aleymi's bites made my meeting a total success. I ordered the full tray and everyone wanted to know where I got it.", product: "Full Tray" },
+    { id: 2, name: "Alejandra Z.", location: "Portoviejo, Ecuador", rating: 5, text: "I finally found bites that truly taste homemade. The empanadas are my favorites, I always order them.", product: "Mini Empanadas" },
+    { id: 3, name: "Anthonella C.", location: "Portoviejo, Ecuador", rating: 5, text: "The shrimp tartlets are spectacular. The presentation is beautiful and the flavor is amazing.", product: "Tartlets" },
+    { id: 4, name: "Aldair T.", location: "Portoviejo, Ecuador", rating: 5, text: "I ordered the full tray for a corporate event and everyone was delighted. The quality is unmatched.", product: "Full Tray" },
+    { id: 5, name: "Malena P.", location: "Portoviejo, Ecuador", rating: 5, text: "The mini burgers are perfect for my gatherings. Everything fresh and artisan, presentation impeccable.", product: "Mini Burgers" },
+    { id: 6, name: "Miguel Z.", location: "Portoviejo, Ecuador", rating: 5, text: "The mini sandwiches are perfect for work meetings. I always order extra because they fly.", product: "Mini Sandwiches" },
+    { id: 7, name: "Sebastian Z.", location: "Portoviejo, Ecuador", rating: 5, text: "The mini hot dogs are incredible. Each one has a special touch that makes them unique.", product: "Mini Hot Dogs" },
+    { id: 8, name: "Christian S.", location: "Portoviejo, Ecuador", rating: 5, text: "I ordered meatballs for my daughter's birthday and it was a total hit. They disappeared in minutes!", product: "Meatballs" },
+    { id: 9, name: "Cintia I.", location: "Portoviejo, Ecuador", rating: 5, text: "Customer service is excellent and the bites always arrive fresh. The cheese fingers are a delight.", product: "Cheese Fingers" },
   ],
 }
 

@@ -5,149 +5,37 @@ import Image from "next/image"
 import Link from "next/link"
 import { ShoppingBag } from "lucide-react"
 import { useCart } from "./cart-context"
+import { useLang } from "./language-context"
 
-type Category = "salado" | "dulce" | "tabla"
+type Category = "bocaditos" | "bandejas"
 
 const products = [
-  // Salados
-  {
-    id: "mini-empanadas",
-    name: "Mini Empanadas",
-    description: "Rellenas de carne, pollo o jamón y queso",
-    price: 25,
-    originalPrice: null,
-    image: "/images/products/product2.png",
-    badge: "Popular",
-    category: "salado" as Category
-  },
-  {
-    id: "mini-sandwiches",
-    name: "Mini Sándwiches",
-    description: "Variedad de rellenos gourmet",
-    price: 22,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: null,
-    category: "salado" as Category
-  },
-  {
-    id: "brochetas-caprese",
-    name: "Brochetas Caprese",
-    description: "Tomate cherry, mozzarella y albahaca",
-    price: 28,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: "Nuevo",
-    category: "salado" as Category
-  },
-  {
-    id: "croquetas-jamon",
-    name: "Croquetas de Jamón",
-    description: "Crujientes y cremosas por dentro",
-    price: 20,
-    originalPrice: 25,
-    image: "/images/products/producto1.png",
-    badge: "Oferta",
-    category: "salado" as Category
-  },
-  // Dulces
-  {
-    id: "alfajores",
-    name: "Alfajores",
-    description: "Rellenos de manjar blanco",
-    price: 18,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: null,
-    category: "dulce" as Category
-  },
-  {
-    id: "profiteroles",
-    name: "Profiteroles",
-    description: "Rellenos de crema pastelera",
-    price: 22,
-    originalPrice: 28,
-    image: "/images/products/producto1.png",
-    badge: "Oferta",
-    category: "dulce" as Category
-  },
-  {
-    id: "mini-brownies",
-    name: "Mini Brownies",
-    description: "/images/products/producto1.png",
-    price: 20,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: "Popular",
-    category: "dulce" as Category
-  },
-  {
-    id: "macarons",
-    name: "Macarons",
-    description: "Sabores variados del día",
-    price: 30,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: null,
-    category: "dulce" as Category
-  },
-  // Tablas
-  {
-    id: "tabla-clasica",
-    name: "Tabla Clásica",
-    description: "Quesos, embutidos y frutos secos",
-    price: 45,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: "Nuevo",
-    category: "tabla" as Category
-  },
-  {
-    id: "tabla-quesos",
-    name: "Tabla de Quesos",
-    description: "Selección de quesos artesanales",
-    price: 38,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: null,
-    category: "tabla" as Category
-  },
-  {
-    id: "tabla-frutas",
-    name: "Tabla de Frutas",
-    description: "Frutas frescas de temporada",
-    price: 35,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: null,
-    category: "tabla" as Category
-  },
-  {
-    id: "tabla-gourmet",
-    name: "Tabla Gourmet",
-    description: "La selección premium completa",
-    price: 65,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: "Popular",
-    category: "tabla" as Category
-  }
+  { id: "bolas-de-carne", name: "Bolas de Carne", description: "50 unids. albóndigas caseras en salsa especial", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: "Popular", category: "bocaditos" as Category },
+  { id: "dedos-de-queso", name: "Dedos de Queso", description: "50 unids. de queso o mortadela apanados", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" as Category },
+  { id: "mini-empanadillas", name: "Mini Empanadillas", description: "50 unids. sabores: queso, pollo, carne o piña", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" as Category },
+  { id: "mini-sanduchitos", name: "Mini Sanduchitos", description: "50 unids. queso cheddar, lechuga y jamón", price: 16, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" as Category },
+  { id: "mini-hamburguesas", name: "Mini Hamburguesas", description: "50 unids. con aderezos especiales", price: 17.50, originalPrice: null, image: "/images/products/producto1.png", badge: "Nuevo", category: "bocaditos" as Category },
+  { id: "mini-hotdog", name: "Mini Hot Dog", description: "50 unids. en pan artesanal", price: 17.50, originalPrice: null, image: "/images/products/miniHotdogs.png", badge: null, category: "bocaditos" as Category },
+  { id: "mini-salchichas", name: "Mini Salchichas BBQ", description: "50 unids. en salsa BBQ especial", price: 10.50, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" as Category },
+  { id: "tartaletas", name: "Tartaletas", description: "50 unids. de pollo o camarón", price: 18.50, originalPrice: null, image: "/images/products/producto1.png", badge: "Popular", category: "bocaditos" as Category },
+  { id: "bandeja-completa", name: "Bandeja Completa", description: "100 piqueos surtidos seleccionados", price: 29, originalPrice: null, image: "/images/products/bandejaClasica.png", badge: "Nuevo", category: "bandejas" as Category },
+  { id: "bandeja-personalizada", name: "Bandeja Personalizada", description: "Piqueos a tu elección — desde $2.75 c/u", price: 2.75, originalPrice: null, image: "/images/products/bandejaClasica.png", badge: null, category: "bandejas" as Category },
 ]
 
 const categories = [
-  { value: "salado" as Category, label: "Salados" },
-  { value: "dulce" as Category, label: "Dulces" },
-  { value: "tabla" as Category, label: "Tablas" }
+  { value: "bocaditos" as Category, label: { es: "Bocaditos", en: "Bites" } },
+  { value: "bandejas" as Category, label: { es: "Bandejas", en: "Trays" } },
 ]
 
 export function ProductGrid() {
-  const [selectedCategory, setSelectedCategory] = useState<Category>("salado")
+  const [selectedCategory, setSelectedCategory] = useState<Category>("bocaditos")
   const [isVisible, setIsVisible] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [headerVisible, setHeaderVisible] = useState(false)
   const gridRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const { addItem } = useCart()
+  const { lang } = useLang()
   
   const filteredProducts = products.filter(product => product.category === selectedCategory)
 
@@ -214,13 +102,13 @@ export function ProductGrid() {
         {/* Header */}
         <div ref={headerRef} className="text-center mb-16">
           <span className={`text-sm tracking-[0.3em] uppercase text-primary mb-4 block ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.2s', animationFillMode: 'forwards' } : {}}>
-            Nuestra Colección
+            {lang === 'es' ? 'Nuestra Colección' : 'Our Collection'}
           </span>
           <h2 className={`font-serif leading-tight text-foreground mb-4 text-balance text-7xl ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.4s', animationFillMode: 'forwards' } : {}}>
-            Bocaditos irresistibles
+            {lang === 'es' ? 'Bocaditos irresistibles' : 'Irresistible bites'}
           </h2>
           <p className={`text-lg text-muted-foreground max-w-md mx-auto ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.6s', animationFillMode: 'forwards' } : {}}>
-            Productos elaborados con cariño para cada ocasión especial
+            {lang === 'es' ? 'Productos elaborados con cariño para cada ocasión especial' : 'Products crafted with care for every special occasion'}
           </p>
         </div>
 
@@ -231,8 +119,8 @@ export function ProductGrid() {
             <div
               className="absolute top-1 bottom-1 bg-foreground rounded-full transition-all duration-300 ease-out shadow-sm"
               style={{
-                left: selectedCategory === 'salado' ? '4px' : selectedCategory === 'dulce' ? 'calc(33.333% + 2px)' : 'calc(66.666%)',
-                width: 'calc(33.333% - 4px)'
+                left: selectedCategory === 'bocaditos' ? '4px' : 'calc(50% + 2px)',
+                width: 'calc(50% - 4px)'
               }}
             />
             {categories.map((category) => (
@@ -246,7 +134,7 @@ export function ProductGrid() {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {category.label}
+                {category.label[lang]}
               </button>
             ))}
           </div>
@@ -315,7 +203,7 @@ export function ProductGrid() {
                   <h3 className="font-serif text-lg text-foreground mb-1">{product.name}</h3>
                   <p className="text-sm text-muted-foreground mb-3">{product.description}</p>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">S/{product.price}</span>
+                    <span className="font-medium text-foreground">$ {product.price}</span>
                     {product.originalPrice && (
                       <span className="text-sm text-muted-foreground line-through">
                         S/{product.originalPrice}
@@ -334,7 +222,7 @@ export function ProductGrid() {
             href="/shop"
             className="inline-flex items-center justify-center gap-2 bg-transparent border border-foreground/20 text-foreground px-8 py-4 rounded-full text-sm tracking-wide boty-transition hover:bg-foreground/5"
           >
-            Ver Todos los Productos
+            {lang === 'es' ? 'Ver Todos los Productos' : 'View All Products'}
           </Link>
         </div>
       </div>

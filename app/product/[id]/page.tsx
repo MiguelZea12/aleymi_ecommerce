@@ -23,61 +23,145 @@ const products: Record<string, {
   ingredients: string
   delivery: string
 }> = {
-  "mini-empanadas": {
-    id: "mini-empanadas",
-    name: "Mini Empanadas",
-    tagline: "El clásico que nunca falla",
-    description: "Deliciosas mini empanadas con masa crujiente y rellenos generosos. Perfectas para cualquier reunión o evento.",
-    price: 25,
+  "bolas-de-carne": {
+    id: "bolas-de-carne",
+    name: "Bolas de Carne",
+    tagline: "El bocadito más pedido de Aleymi",
+    description: "50 albóndigas caseras bañadas en salsa especial, preparadas con carne fresca del día. Siempre incluyen salsas para degustar.",
+    price: 15,
     originalPrice: null,
     image: "/images/products/producto1.png",
-    sizes: ["12 unidades", "24 unidades"],
-    details: "Nuestras mini empanadas están elaboradas con masa hojaldrada artesanal y rellenos preparados con ingredientes frescos del día. Disponibles en carne, pollo y jamón y queso.",
-    howToUse: "Servir a temperatura ambiente o calentar en horno a 180°C por 5 minutos para una textura extra crujiente. Ideal como aperitivo.",
-    ingredients: "Harina de trigo, mantequilla, carne/pollo, cebolla, huevo, especias naturales, sal.",
-    delivery: "Envío gratis en pedidos mayores a S/50. Envío express disponible. Todos los pedidos se envían dentro de 1-2 días hábiles."
+    sizes: ["50 unidades"],
+    details: "Nuestras bolas de carne se preparan con carne molida de primera calidad, condimentadas con especias naturales y bañadas en nuestra salsa especial de la casa.",
+    howToUse: "Servir a temperatura ambiente. Ideales para reuniones y eventos. Consumir el mismo día del pedido para mayor frescura.",
+    ingredients: "Carne molida de res, cebolla, ajo, huevo, pan rallado, especias naturales, sal.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
   },
-  "tabla-clasica": {
-    id: "tabla-clasica",
-    name: "Tabla Clásica",
-    tagline: "La selección perfecta para compartir",
-    description: "Una tabla cuidadosamente armada con quesos artesanales, embutidos selectos y frutos secos. Presentación elegante para tus eventos.",
-    price: 45,
+  "dedos-de-queso": {
+    id: "dedos-de-queso",
+    name: "Dedos de Queso",
+    tagline: "Crujientes por fuera, irresistibles por dentro",
+    description: "50 unidades de dedos de queso o mortadela apanados y dorados, con textura crujiente y sabor inigualable.",
+    price: 15,
     originalPrice: null,
-    image: "/images/products/amber-dropper-bottles.png",
-    sizes: ["Para 4-6", "Para 8-12"],
-    details: "Nuestra Tabla Clásica incluye una selección de quesos nacionales e importados, jamón serrano, salami, aceitunas, frutos secos y crackers artesanales.",
-    howToUse: "Retirar del refrigerador 20 minutos antes de servir para disfrutar todos los sabores. Acompañar con vino o bebidas de su preferencia.",
-    ingredients: "Queso gouda, queso brie, queso parmesano, jamón serrano, salami, aceitunas, almendras, nueces, uvas, crackers.",
-    delivery: "Envío gratis en pedidos mayores a S/50. Envío express disponible. Todos los pedidos se envían dentro de 1-2 días hábiles."
+    image: "/images/products/producto1.png",
+    sizes: ["50 unidades"],
+    details: "Elaborados con queso fresco o mortadela, apanados con pan rallado artesanal y preparados al momento. Incluyen salsas para degustar.",
+    howToUse: "Servir recién listos para disfrutar su textura crujiente. Acompañar con las salsas incluidas.",
+    ingredients: "Queso fresco o mortadela, pan rallado, huevo, sal, aceite vegetal.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
   },
-  "alfajores": {
-    id: "alfajores",
-    name: "Alfajores",
-    tagline: "Dulzura artesanal en cada bocado",
-    description: "Alfajores hechos a mano con masa que se deshace en la boca y rellenos de manjar blanco. Un clásico irresistible.",
-    price: 18,
+  "mini-empanadillas": {
+    id: "mini-empanadillas",
+    name: "Mini Empanadillas",
+    tagline: "Cuatro sabores para elegir",
+    description: "50 mini empanadillas con masa crujiente hecha a mano, rellenas a elección: queso, pollo, carne o piña.",
+    price: 15,
     originalPrice: null,
-    image: "/images/products/cream-jars-colored.png",
-    sizes: ["6 unidades", "12 unidades"],
-    details: "Nuestros alfajores se preparan diariamente con mantequilla de primera calidad y manjar blanco casero. Bañados en azúcar glass o chocolate.",
-    howToUse: "Conservar en lugar fresco y seco. Consumir dentro de los 5 días posteriores a la compra para disfrutar su frescura.",
-    ingredients: "Harina, mantequilla, maicena, manjar blanco, azúcar glass, esencia de vainilla.",
-    delivery: "Envío gratis en pedidos mayores a S/50. Envío express disponible. Todos los pedidos se envían dentro de 1-2 días hábiles."
+    image: "/images/products/producto1.png",
+    sizes: ["50 unidades"],
+    details: "Elaboradas con masa hojaldrada artesanal y rellenos frescos preparados el mismo día. Disponibles en cuatro sabores: queso, pollo, carne y piña. Incluyen salsas.",
+    howToUse: "Servir a temperatura ambiente o calentar brevemente. Acompañar con las salsas incluidas.",
+    ingredients: "Harina de trigo, mantequilla, rellenos a elección (queso/pollo/carne/piña), especias naturales.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
   },
-  "tabla-gourmet": {
-    id: "tabla-gourmet",
-    name: "Tabla Gourmet",
-    tagline: "La experiencia premium completa",
-    description: "Nuestra tabla más exclusiva con quesos importados, embutidos premium, frutas de temporada y acompañamientos gourmet.",
-    price: 65,
+  "mini-sanduchitos": {
+    id: "mini-sanduchitos",
+    name: "Mini Sanduchitos",
+    tagline: "El clásico perfecto para cualquier ocasión",
+    description: "50 mini sándwiches con queso cheddar, lechuga fresca y jamón. Sencillos, deliciosos y siempre un éxito.",
+    price: 16,
     originalPrice: null,
-    image: "/images/products/pump-bottles-cream.png",
-    sizes: ["Para 6-8", "Para 10-15"],
-    details: "La Tabla Gourmet es nuestra creación más exclusiva. Incluye quesos importados, jamón ibérico, paté, hummus artesanal, frutas frescas, frutos secos premium y panes artesanales.",
-    howToUse: "Retirar del refrigerador 30 minutos antes de servir. Ideal para maridaje con vinos o espumantes.",
-    ingredients: "Queso brie, queso azul, queso manchego, jamón ibérico, paté, hummus, higos, uvas, almendras, nueces de macadamia, pan artesanal.",
-    delivery: "Envío gratis en pedidos mayores a S/50. Envío express disponible. Todos los pedidos se envían dentro de 1-2 días hábiles."
+    image: "/images/products/producto1.png",
+    sizes: ["50 unidades"],
+    details: "Preparados con pan tierno, queso cheddar, lechuga fresca y jamón de calidad. Cada uno armado con cuidado para una presentación impecable.",
+    howToUse: "Servir frescos, idealmente el mismo día del pedido. Conservar en lugar fresco hasta el momento de servir.",
+    ingredients: "Pan, queso cheddar, lechuga, jamón, mayonesa.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
+  },
+  "mini-hamburguesas": {
+    id: "mini-hamburguesas",
+    name: "Mini Hamburguesas",
+    tagline: "Con todos los aderezos especiales",
+    description: "50 mini hamburguesas con pan esponjoso, carne jugosa y todos los aderezos especiales. El bocadito más completo del menú.",
+    price: 17.50,
+    originalPrice: null,
+    image: "/images/products/producto1.png",
+    sizes: ["50 unidades"],
+    details: "Armadas con pan artesanal, carne de res sazonada, lechuga, tomate y nuestros aderezos especiales. Uno de los favoritos de nuestros clientes.",
+    howToUse: "Servir a temperatura ambiente o calentar brevemente antes de servir para mayor disfrute.",
+    ingredients: "Pan de hamburguesa, carne de res, lechuga, tomate, aderezos especiales.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
+  },
+  "mini-hotdog": {
+    id: "mini-hotdog",
+    name: "Mini Hot Dog",
+    tagline: "El favorito de reuniones y fiestas",
+    description: "50 mini hot dogs en pan artesanal, con salchicha jugosa y los aderezos clásicos que todos aman.",
+    price: 17.50,
+    originalPrice: null,
+    image: "/images/products/miniHotdogs.png",
+    sizes: ["50 unidades"],
+    details: "Preparados con pan suave artesanal, salchicha de primera calidad y aderezos clásicos. Siempre un éxito en cualquier evento.",
+    howToUse: "Servir tibios para disfrutar mejor su sabor. Ideales como aperitivo o bocadito central del evento.",
+    ingredients: "Pan hot dog, salchicha, mostaza, ketchup, mayonesa.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
+  },
+  "mini-salchichas": {
+    id: "mini-salchichas",
+    name: "Mini Salchichas BBQ",
+    tagline: "En nuestra irresistible salsa especial",
+    description: "50 mini salchichas bañadas en salsa BBQ especial de la casa. El bocadito más rendidor y sabroso del menú.",
+    price: 10.50,
+    originalPrice: null,
+    image: "/images/products/producto1.png",
+    sizes: ["50 unidades"],
+    details: "Preparadas con salchichas de calidad y nuestra salsa BBQ casera, con un balance perfecto entre dulce y ahumado.",
+    howToUse: "Servir calientes para mejor sabor. Presentar con palillos para facilitar el servicio.",
+    ingredients: "Mini salchichas, salsa BBQ casera (tomate, azúcar morena, vinagre, especias).",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
+  },
+  "tartaletas": {
+    id: "tartaletas",
+    name: "Tartaletas",
+    tagline: "El toque gourmet del menú Aleymi",
+    description: "50 tartaletas de masa crujiente rellenas de pollo o camarón con queso crema. El bocadito más especial para ocasiones importantes.",
+    price: 18.50,
+    originalPrice: null,
+    image: "/images/products/producto1.png",
+    sizes: ["50 unidades"],
+    details: "Elaboradas con masa quebrada artesanal y rellenas de pollo o camarón con queso crema, decoradas para una presentación impecable.",
+    howToUse: "Servir a temperatura ambiente. Consumir el mismo día para mantener la textura crujiente de la masa.",
+    ingredients: "Masa quebrada, pollo o camarón, queso crema, especias, perejil.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
+  },
+  "bandeja-completa": {
+    id: "bandeja-completa",
+    name: "Bandeja Completa",
+    tagline: "Para llenar tu evento de sabor",
+    description: "Bandeja surtida con 100 piqueos seleccionados. La opción perfecta para llenar tu fiesta o evento de sabor y variedad.",
+    price: 29,
+    originalPrice: null,
+    image: "/images/products/bandejaClasica.png",
+    sizes: ["100 piqueos surtidos"],
+    details: "Incluye una selección de 100 bocaditos variados del menú Aleymi, presentados en bandeja con salsas para degustar incluidas.",
+    howToUse: "Servir a temperatura ambiente. Ideal para eventos de 15-20 personas. Incluye salsas.",
+    ingredients: "Selección surtida de bocaditos del menú Aleymi.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
+  },
+  "bandeja-personalizada": {
+    id: "bandeja-personalizada",
+    name: "Bandeja Personalizada",
+    tagline: "Tu elección, nuestro sabor",
+    description: "Arma tu propia bandeja con los bocaditos que más te gustan. Precio desde $2.75 por unidad — perfecto para personalizar tu evento.",
+    price: 2.75,
+    originalPrice: null,
+    image: "/images/products/bandejaClasica.png",
+    sizes: ["Mínimo 50 unidades"],
+    details: "Puedes combinar libremente todos los bocaditos del menú. Mézclanos como quieras — precio por unidad desde $2.75.",
+    howToUse: "Consultar disponibilidad y combinar con los bocaditos de tu preferencia. Servir a temperatura ambiente.",
+    ingredients: "Selección a elección del menú Aleymi.",
+    delivery: "Pedidos con 2 días de anticipación y previo abono. Consultar disponibilidad para su fecha."
   }
 }
 
@@ -101,7 +185,7 @@ type AccordionSection = "details" | "howToUse" | "ingredients" | "delivery"
 export default function ProductPage() {
   const params = useParams()
   const productId = params.id as string
-  const product = products[productId] || products["mini-empanadas"]
+  const product = products[productId] || products["bolas-de-carne"]
   const { lang } = useLang()
 
   const [selectedSize, setSelectedSize] = useState(product.sizes[0])
@@ -126,7 +210,7 @@ export default function ProductPage() {
     { key: "details", title: lang === 'es' ? "Detalles" : "Details", content: product.details },
     { key: "howToUse", title: lang === 'es' ? "Cómo Servir" : "How to Serve", content: product.howToUse },
     { key: "ingredients", title: lang === 'es' ? "Ingredientes" : "Ingredients", content: product.ingredients },
-    { key: "delivery", title: lang === 'es' ? "Envío y Devoluciones" : "Shipping & Returns", content: product.delivery },
+    { key: "delivery", title: lang === 'es' ? "Cómo Pedir" : "How to Order", content: product.delivery },
   ]
 
   return (
@@ -137,7 +221,7 @@ export default function ProductPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {/* Back Link */}
           <Link
-            href="/"
+            href="/shop"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground boty-transition mb-8"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -187,10 +271,10 @@ export default function ProductPage() {
 
               {/* Price */}
               <div className="flex items-center gap-3 mb-8">
-                <span className="text-3xl font-medium text-foreground">S/{product.price}</span>
+                <span className="text-3xl font-medium text-foreground">$ {product.price}</span>
                 {product.originalPrice && (
                   <span className="text-xl text-muted-foreground line-through">
-                    S/{product.originalPrice}
+                    $ {product.originalPrice}
                   </span>
                 )}
               </div>

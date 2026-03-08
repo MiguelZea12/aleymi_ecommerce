@@ -46,7 +46,7 @@ export function Header() {
               {t[lang].about}
             </Link>
             <Link
-              href="/"
+              href="/menu"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
               {t[lang].menu}
@@ -121,7 +121,7 @@ export function Header() {
               {t[lang].about}
             </Link>
             <Link
-              href="/"
+              href="/menu"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
               {t[lang].menu}

@@ -12,171 +12,37 @@ const t = {
   es: {
     eyebrow: "Nuestra Colección",
     title: "Todos los Productos",
-    subtitle: "Descubre nuestra variedad de bocaditos artesanales",
+    subtitle: "Bocaditos artesanales preparados con cariño",
     filters: "Filtros",
-    categories: { todos: "Todos", salados: "Salados", dulces: "Dulces", tablas: "Tablas", packs: "Packs" },
+    categories: { todos: "Todos", bocaditos: "Bocaditos", bandejas: "Bandejas" },
     product: "producto",
     products: "productos",
   },
   en: {
     eyebrow: "Our Collection",
     title: "All Products",
-    subtitle: "Discover our variety of artisan bites",
+    subtitle: "Artisan bites crafted with care",
     filters: "Filters",
-    categories: { todos: "All", salados: "Savory", dulces: "Sweet", tablas: "Boards", packs: "Packs" },
+    categories: { todos: "All", bocaditos: "Bites", bandejas: "Trays" },
     product: "product",
     products: "products",
   },
 }
 
 const products = [
-  // Salados
-  {
-    id: "mini-empanadas",
-    name: "Mini Empanadas",
-    description: "Rellenas de carne, pollo o jamón y queso",
-    price: 25,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: "Popular",
-    category: "salados"
-  },
-  {
-    id: "mini-sandwiches",
-    name: "Mini Sándwiches",
-    description: "Variedad de rellenos gourmet",
-    price: 22,
-    originalPrice: null,
-    image: "/images/products/producto1.png",
-    badge: null,
-    category: "salados"
-  },
-  {
-    id: "brochetas-caprese",
-    name: "Brochetas Caprese",
-    description: "Tomate cherry, mozzarella y albahaca",
-    price: 28,
-    originalPrice: null,
-    image: "/images/products/amber-dropper-bottles.png",
-    badge: "Nuevo",
-    category: "salados"
-  },
-  {
-    id: "croquetas-jamon",
-    name: "Croquetas de Jamón",
-    description: "Crujientes y cremosas por dentro",
-    price: 20,
-    originalPrice: 25,
-    image: "/images/products/spray-bottles.png",
-    badge: "Oferta",
-    category: "salados"
-  },
-  // Dulces
-  {
-    id: "alfajores",
-    name: "Alfajores",
-    description: "Rellenos de manjar blanco",
-    price: 18,
-    originalPrice: null,
-    image: "/images/products/cream-jars-colored.png",
-    badge: null,
-    category: "dulces"
-  },
-  {
-    id: "profiteroles",
-    name: "Profiteroles",
-    description: "Rellenos de crema pastelera",
-    price: 22,
-    originalPrice: 28,
-    image: "/images/products/tube-bottles.png",
-    badge: "Oferta",
-    category: "dulces"
-  },
-  {
-    id: "mini-brownies",
-    name: "Mini Brownies",
-    description: "Chocolate belga con nueces",
-    price: 20,
-    originalPrice: null,
-    image: "/images/products/jars-wooden-lid.png",
-    badge: "Popular",
-    category: "dulces"
-  },
-  {
-    id: "macarons",
-    name: "Macarons",
-    description: "Sabores variados del día",
-    price: 30,
-    originalPrice: null,
-    image: "/images/products/pump-bottles-lavender.png",
-    badge: null,
-    category: "dulces"
-  },
-  // Tablas
-  {
-    id: "tabla-clasica",
-    name: "Tabla Clásica",
-    description: "Quesos, embutidos y frutos secos",
-    price: 45,
-    originalPrice: null,
-    image: "/images/products/amber-dropper-bottles.png",
-    badge: "Nuevo",
-    category: "tablas"
-  },
-  {
-    id: "tabla-quesos",
-    name: "Tabla de Quesos",
-    description: "Selección de quesos artesanales",
-    price: 38,
-    originalPrice: null,
-    image: "/images/products/serum-bottles-1.png",
-    badge: null,
-    category: "tablas"
-  },
-  {
-    id: "tabla-frutas",
-    name: "Tabla de Frutas",
-    description: "Frutas frescas de temporada",
-    price: 35,
-    originalPrice: null,
-    image: "/images/products/spray-bottles.png",
-    badge: null,
-    category: "tablas"
-  },
-  {
-    id: "tabla-gourmet",
-    name: "Tabla Gourmet",
-    description: "La selección premium completa",
-    price: 65,
-    originalPrice: null,
-    image: "/images/products/pump-bottles-cream.png",
-    badge: "Popular",
-    category: "tablas"
-  },
-  // Packs
-  {
-    id: "pack-fiesta",
-    name: "Pack Fiesta",
-    description: "Selección mixta para eventos",
-    price: 85,
-    originalPrice: null,
-    image: "/images/products/mask.jpg",
-    badge: null,
-    category: "packs"
-  },
-  {
-    id: "pack-corporativo",
-    name: "Pack Corporativo",
-    description: "Ideal para reuniones de trabajo",
-    price: 120,
-    originalPrice: null,
-    image: "/images/products/toner.jpg",
-    badge: "Nuevo",
-    category: "packs"
-  }
+  { id: "bolas-de-carne", name: "Bolas de Carne", description: "50 unids. albóndigas caseras en salsa especial", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: "Popular", category: "bocaditos" },
+  { id: "dedos-de-queso", name: "Dedos de Queso", description: "50 unids. de queso o mortadela apanados", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" },
+  { id: "mini-empanadillas", name: "Mini Empanadillas", description: "50 unids. sabores: queso, pollo, carne o piña", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" },
+  { id: "mini-sanduchitos", name: "Mini Sanduchitos", description: "50 unids. queso cheddar, lechuga y jamón", price: 16, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" },
+  { id: "mini-hamburguesas", name: "Mini Hamburguesas", description: "50 unids. con aderezos especiales", price: 17.50, originalPrice: null, image: "/images/products/producto1.png", badge: "Nuevo", category: "bocaditos" },
+  { id: "mini-hotdog", name: "Mini Hot Dog", description: "50 unids. en pan artesanal", price: 17.50, originalPrice: null, image: "/images/products/miniHotdogs.png", badge: null, category: "bocaditos" },
+  { id: "mini-salchichas", name: "Mini Salchichas BBQ", description: "50 unids. en salsa BBQ especial", price: 10.50, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" },
+  { id: "tartaletas", name: "Tartaletas", description: "50 unids. de pollo o camarón", price: 18.50, originalPrice: null, image: "/images/products/producto1.png", badge: "Popular", category: "bocaditos" },
+  { id: "bandeja-completa", name: "Bandeja Completa", description: "100 piqueos surtidos seleccionados", price: 29, originalPrice: null, image: "/images/products/bandejaClasica.png", badge: "Nuevo", category: "bandejas" },
+  { id: "bandeja-personalizada", name: "Bandeja Personalizada", description: "Piqueos a tu elección — desde $2.75 c/u", price: 2.75, originalPrice: null, image: "/images/products/bandejaClasica.png", badge: null, category: "bandejas" },
 ]
 
-const categories = ["todos", "salados", "dulces", "tablas", "packs"]
+const categories = ["todos", "bocaditos", "bandejas"]
 
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState("todos")
