@@ -198,25 +198,22 @@ export function FeatureSection() {
             </div>
           </div>
 
-          {/* Bottom Right - Eco-Friendly Packaging */}
+          {/* Bottom Right - Premium */}
           <div 
             className={`rounded-3xl p-6 md:p-8 flex flex-col justify-center relative overflow-hidden md:col-span-2 transition-all duration-700 ease-out ${
               isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
             style={{ transitionDelay: '200ms' }}
           >
-            {/* Background Video */}
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover scale-[1.02]"
-            >
-              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/a0b7c364-afa9-4afa-9716-45718578cc01-Ih8UaqQr1bl8aoNlbRha4FgaQ65eXX.mp4" type="video/mp4" />
-            </video>
+            {/* Background Image */}
+            <Image
+              src="/premium.jpg"
+              alt="Premium presentation"
+              fill
+              className="object-cover"
+            />
             {/* Overlay for text readability */}
-            <div className="absolute inset-0 bg-transparent" />
+            <div className="absolute inset-0 bg-black/10" />
             
             <div className="relative z-10 flex flex-col justify-center h-full text-left items-start">
               <div className="inline-flex items-center justify-center w-10 h-10 mb-3">
@@ -249,7 +246,7 @@ export function FeatureSection() {
               playsInline
               className="absolute inset-0 w-full h-full object-cover"
             >
-              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0c826034-d4f2-4d4f-8e99-50e94e4ce63f-dG1CBOjR36xFPTbhcROrHbomGXtlTQ.mp4" type="video/mp4" />
+              <source src="/food2.mp4" type="video/mp4" />
             </video>
           </div>
 
@@ -261,14 +258,16 @@ export function FeatureSection() {
             }`}
             style={{ transitionDelay: '100ms' }}
           >
-            <span className={`text-sm tracking-[0.3em] uppercase text-primary mb-4 block ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.2s', animationFillMode: 'forwards' } : {}}>
+            <span className={`text-sm tracking-[0.3em] uppercase text-primary mb-4 block ${headerVisible ? 'animate-fade-up opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.2s', animationFillMode: 'forwards' } : {}}>
               {tx.eyebrow}
             </span>
-            <h2 className={`font-serif text-4xl leading-tight text-foreground mb-6 text-balance md:text-7xl ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.4s', animationFillMode: 'forwards' } : {}}>
+            <h2 className={`font-serif text-4xl leading-tight text-foreground mb-6 text-balance md:text-7xl ${headerVisible ? 'animate-fade-up opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.4s', animationFillMode: 'forwards' } : {}}>
               {tx.title}
             </h2>
-            <p className={`text-lg text-muted-foreground leading-relaxed mb-10 max-w-md ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.6s', animationFillMode: 'forwards' } : {}}>
-              {tx.body}
+            <p className={`text-lg text-muted-foreground leading-relaxed mb-10 max-w-md ${headerVisible ? 'animate-fade-up opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.6s', animationFillMode: 'forwards' } : {}}>
+              {lang === 'es'
+                ? 'Cada bocadito está preparado con dedicación, ingredientes frescos y recetas de casa.'
+                : 'Each bite is prepared with dedication, fresh ingredients and home recipes.'}
             </p>
 
             {/* Feature Cards */}

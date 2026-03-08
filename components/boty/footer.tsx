@@ -97,7 +97,7 @@ export function Footer() {
             </p>
             <div className="flex gap-4">
               <a
-                href="https://x.com/Kerroudjm"
+                href="https://www.instagram.com/aleymi_dd?igsh=amIweW9weWx4aXM1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-foreground/60 hover:text-foreground boty-transition boty-shadow"
@@ -106,22 +106,13 @@ export function Footer() {
                 <Instagram className="w-4 h-4" />
               </a>
               <a
-                href="https://x.com/Kerroudjm"
+                href="https://www.facebook.com/share/1HcBh7nwH1/?mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-foreground/60 hover:text-foreground boty-transition boty-shadow"
                 aria-label="Facebook"
               >
                 <Facebook className="w-4 h-4" />
-              </a>
-              <a
-                href="https://x.com/Kerroudjm"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-foreground/60 hover:text-foreground boty-transition boty-shadow"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-4 h-4" />
               </a>
             </div>
           </div>

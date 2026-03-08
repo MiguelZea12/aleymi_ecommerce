@@ -101,13 +101,13 @@ export function ProductGrid() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
         <div ref={headerRef} className="text-center mb-16">
-          <span className={`text-sm tracking-[0.3em] uppercase text-primary mb-4 block ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.2s', animationFillMode: 'forwards' } : {}}>
+          <span className={`text-sm tracking-[0.3em] uppercase text-primary mb-4 block ${headerVisible ? 'animate-fade-up opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.2s', animationFillMode: 'forwards' } : {}}>
             {lang === 'es' ? 'Nuestra Colección' : 'Our Collection'}
           </span>
-          <h2 className={`font-serif leading-tight text-foreground mb-4 text-balance text-7xl ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.4s', animationFillMode: 'forwards' } : {}}>
+          <h2 className={`font-serif leading-tight text-foreground mb-4 text-balance text-4xl sm:text-5xl md:text-6xl lg:text-7xl ${headerVisible ? 'animate-fade-up opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.4s', animationFillMode: 'forwards' } : {}}>
             {lang === 'es' ? 'Bocaditos irresistibles' : 'Irresistible bites'}
           </h2>
-          <p className={`text-lg text-muted-foreground max-w-md mx-auto ${headerVisible ? 'animate-blur-in opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.6s', animationFillMode: 'forwards' } : {}}>
+          <p className={`text-lg text-muted-foreground max-w-md mx-auto ${headerVisible ? 'animate-fade-up opacity-0' : 'opacity-0'}`} style={headerVisible ? { animationDelay: '0.6s', animationFillMode: 'forwards' } : {}}>
             {lang === 'es' ? 'Productos elaborados con cariño para cada ocasión especial' : 'Products crafted with care for every special occasion'}
           </p>
         </div>
