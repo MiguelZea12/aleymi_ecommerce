@@ -87,13 +87,6 @@ export function Header() {
               <Globe className="w-3.5 h-3.5" />
               {t[lang].langLabel}
             </button>
-            <button
-              type="button"
-              className="p-2 text-foreground/70 hover:text-foreground boty-transition"
-              aria-label={t[lang].search}
-            >
-              <Search className="w-5 h-5" />
-            </button>
             <div className="relative" ref={dropdownRef}>
               {user ? (
                 <>

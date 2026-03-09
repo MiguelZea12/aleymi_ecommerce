@@ -151,12 +151,12 @@ function PerfilTab({
   return (
     <div className="space-y-6">
       <div className="bg-card rounded-2xl p-8 boty-shadow">
-        <div className="flex items-center gap-5 mb-8">
-          <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 mb-8 text-center sm:text-left">
+          <div className="w-20 h-20 shrink-0 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-3xl font-bold">
             {profile?.name?.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase() ?? "?"}
           </div>
-          <div>
-            <h2 className="font-serif text-2xl text-foreground">{profile?.name}</h2>
+          <div className="min-w-0">
+            <h2 className="font-serif text-2xl text-foreground break-words">{profile?.name}</h2>
             <p className="text-sm text-muted-foreground">Cuenta activa</p>
           </div>
         </div>

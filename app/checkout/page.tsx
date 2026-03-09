@@ -205,8 +205,20 @@ export default function CheckoutPage() {
 
           <h1 className="font-serif text-4xl md:text-5xl text-foreground mb-10">{tx.title}</h1>
 
-          <div className="grid lg:grid-cols-5 gap-10">
-            <div className="lg:col-span-3 space-y-10">
+          <div className="flex flex-col lg:grid lg:grid-cols-5 gap-10">
+            <div className="lg:col-span-2 order-first lg:order-last">
+              <OrderSummary
+                tx={tx}
+                items={items}
+                subtotal={subtotal}
+                shipping={shipping}
+                total={total}
+                updateQuantity={updateQuantity}
+                removeItem={removeItem}
+              />
+            </div>
+
+            <div className="lg:col-span-3 space-y-10 order-last lg:order-first">
               {!user ? (
                 <AuthPanel title={tx.authTitle} subtitle={tx.authSubtitle} />
               ) : (
@@ -223,18 +235,6 @@ export default function CheckoutPage() {
                   userId={user?.uid}
                 />
               )}
-            </div>
-
-            <div className="lg:col-span-2">
-              <OrderSummary
-                tx={tx}
-                items={items}
-                subtotal={subtotal}
-                shipping={shipping}
-                total={total}
-                updateQuantity={updateQuantity}
-                removeItem={removeItem}
-              />
             </div>
           </div>
         </div>
