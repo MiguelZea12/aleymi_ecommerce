@@ -4,6 +4,7 @@ import { DM_Sans, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CartProvider } from '@/components/boty/cart-context'
 import { LanguageProvider } from '@/components/boty/language-context'
+import { AuthProvider } from '@/components/boty/auth-context'
 import './globals.css'
 
 const dmSans = DM_Sans({ 
@@ -55,9 +56,11 @@ export default function RootLayout({
     <html lang="es">
       <body className={`${dmSans.variable} ${playfairDisplay.variable} font-sans antialiased`}>
         <LanguageProvider>
-          <CartProvider>
-            {children}
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              {children}
+            </CartProvider>
+          </AuthProvider>
         </LanguageProvider>
         <Analytics />
       </body>

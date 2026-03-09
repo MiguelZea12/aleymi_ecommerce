@@ -6,21 +6,9 @@ import Link from "next/link"
 import { ShoppingBag } from "lucide-react"
 import { useCart } from "./cart-context"
 import { useLang } from "./language-context"
+import { useProducts } from "@/hooks/use-products"
 
 type Category = "bocaditos" | "bandejas"
-
-const products = [
-  { id: "bolas-de-carne", name: "Bolas de Carne", description: "50 unids. albóndigas caseras en salsa especial", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: "Popular", category: "bocaditos" as Category },
-  { id: "dedos-de-queso", name: "Dedos de Queso", description: "50 unids. de queso o mortadela apanados", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" as Category },
-  { id: "mini-empanadillas", name: "Mini Empanadillas", description: "50 unids. sabores: queso, pollo, carne o piña", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" as Category },
-  { id: "mini-sanduchitos", name: "Mini Sanduchitos", description: "50 unids. queso cheddar, lechuga y jamón", price: 16, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" as Category },
-  { id: "mini-hamburguesas", name: "Mini Hamburguesas", description: "50 unids. con aderezos especiales", price: 17.50, originalPrice: null, image: "/images/products/producto1.png", badge: "Nuevo", category: "bocaditos" as Category },
-  { id: "mini-hotdog", name: "Mini Hot Dog", description: "50 unids. en pan artesanal", price: 17.50, originalPrice: null, image: "/images/products/miniHotdogs.png", badge: null, category: "bocaditos" as Category },
-  { id: "mini-salchichas", name: "Mini Salchichas BBQ", description: "50 unids. en salsa BBQ especial", price: 10.50, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" as Category },
-  { id: "tartaletas", name: "Tartaletas", description: "50 unids. de pollo o camarón", price: 18.50, originalPrice: null, image: "/images/products/producto1.png", badge: "Popular", category: "bocaditos" as Category },
-  { id: "bandeja-completa", name: "Bandeja Completa", description: "100 piqueos surtidos seleccionados", price: 29, originalPrice: null, image: "/images/products/bandejaClasica.png", badge: "Nuevo", category: "bandejas" as Category },
-  { id: "bandeja-personalizada", name: "Bandeja Personalizada", description: "Piqueos a tu elección — desde $2.75 c/u", price: 2.75, originalPrice: null, image: "/images/products/bandejaClasica.png", badge: null, category: "bandejas" as Category },
-]
 
 const categories = [
   { value: "bocaditos" as Category, label: { es: "Bocaditos", en: "Bites" } },
@@ -36,6 +24,7 @@ export function ProductGrid() {
   const headerRef = useRef<HTMLDivElement>(null)
   const { addItem } = useCart()
   const { lang } = useLang()
+  const { products, loading } = useProducts()
   
   const filteredProducts = products.filter(product => product.category === selectedCategory)
 

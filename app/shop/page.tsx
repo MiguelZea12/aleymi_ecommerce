@@ -7,6 +7,9 @@ import { ShoppingBag, SlidersHorizontal, X } from "lucide-react"
 import { Header } from "@/components/boty/header"
 import { Footer } from "@/components/boty/footer"
 import { useLang } from "@/components/boty/language-context"
+import { useCart } from "@/components/boty/cart-context"
+import { useProducts } from "@/hooks/use-products"
+import type { Product } from "@/lib/types"
 
 const t = {
   es: {
@@ -29,19 +32,6 @@ const t = {
   },
 }
 
-const products = [
-  { id: "bolas-de-carne", name: "Bolas de Carne", description: "50 unids. albóndigas caseras en salsa especial", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: "Popular", category: "bocaditos" },
-  { id: "dedos-de-queso", name: "Dedos de Queso", description: "50 unids. de queso o mortadela apanados", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" },
-  { id: "mini-empanadillas", name: "Mini Empanadillas", description: "50 unids. sabores: queso, pollo, carne o piña", price: 15, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" },
-  { id: "mini-sanduchitos", name: "Mini Sanduchitos", description: "50 unids. queso cheddar, lechuga y jamón", price: 16, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" },
-  { id: "mini-hamburguesas", name: "Mini Hamburguesas", description: "50 unids. con aderezos especiales", price: 17.50, originalPrice: null, image: "/images/products/producto1.png", badge: "Nuevo", category: "bocaditos" },
-  { id: "mini-hotdog", name: "Mini Hot Dog", description: "50 unids. en pan artesanal", price: 17.50, originalPrice: null, image: "/images/products/miniHotdogs.png", badge: null, category: "bocaditos" },
-  { id: "mini-salchichas", name: "Mini Salchichas BBQ", description: "50 unids. en salsa BBQ especial", price: 10.50, originalPrice: null, image: "/images/products/producto1.png", badge: null, category: "bocaditos" },
-  { id: "tartaletas", name: "Tartaletas", description: "50 unids. de pollo o camarón", price: 18.50, originalPrice: null, image: "/images/products/producto1.png", badge: "Popular", category: "bocaditos" },
-  { id: "bandeja-completa", name: "Bandeja Completa", description: "100 piqueos surtidos seleccionados", price: 29, originalPrice: null, image: "/images/products/bandejaClasica.png", badge: "Nuevo", category: "bandejas" },
-  { id: "bandeja-personalizada", name: "Bandeja Personalizada", description: "Piqueos a tu elección — desde $2.75 c/u", price: 2.75, originalPrice: null, image: "/images/products/bandejaClasica.png", badge: null, category: "bandejas" },
-]
-
 const categories = ["todos", "bocaditos", "bandejas"]
 
 export default function ShopPage() {
@@ -50,6 +40,8 @@ export default function ShopPage() {
   const [isVisible, setIsVisible] = useState(false)
   const gridRef = useRef<HTMLDivElement>(null)
   const { lang } = useLang()
+  const { addItem } = useCart()
+  const { products, loading } = useProducts()
   const tx = t[lang]
 
   const filteredProducts = selectedCategory === "todos"
@@ -185,6 +177,13 @@ export default function ShopPage() {
                 product={product}
                 index={index}
                 isVisible={isVisible}
+                onAddToCart={(p) => addItem({
+                  id: p.id,
+                  name: p.name,
+                  description: p.description,
+                  price: p.price,
+                  image: p.image,
+                })}
               />
             ))}
           </div>
@@ -199,11 +198,13 @@ export default function ShopPage() {
 function ProductCard({ 
   product, 
   index, 
-  isVisible 
+  isVisible,
+  onAddToCart,
 }: { 
-  product: typeof products[0]
+  product: Product
   index: number
   isVisible: boolean
+  onAddToCart: (product: Product) => void
 }) {
   const [imageLoaded, setImageLoaded] = useState(false)
 
@@ -254,6 +255,8 @@ function ProductCard({
             className="absolute bottom-4 right-4 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 boty-transition boty-shadow"
             onClick={(e) => {
               e.preventDefault()
+              e.stopPropagation()
+              onAddToCart(product)
             }}
             aria-label="Add to cart"
           >

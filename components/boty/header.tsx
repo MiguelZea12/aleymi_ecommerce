@@ -1,21 +1,39 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { Menu, X, ShoppingBag, Search, User, Globe } from "lucide-react"
+import { Menu, X, ShoppingBag, Search, User, Globe, LogOut, ClipboardList, UserCircle2 } from "lucide-react"
 import { CartDrawer } from "./cart-drawer"
 import { useCart } from "./cart-context"
 import { useLang } from "./language-context"
+import { useAuth } from "./auth-context"
 
 const t = {
-  es: { shop: "Tienda", about: "Nosotros", menu: "Menú", account: "Cuenta", search: "Buscar", langLabel: "ES", langFull: "Español" },
-  en: { shop: "Shop", about: "About", menu: "Menu", account: "Account", search: "Search", langLabel: "EN", langFull: "English" },
+  es: { shop: "Tienda", about: "Nosotros", menu: "Menú", account: "Cuenta", search: "Buscar", langLabel: "ES", langFull: "Español", myAccount: "Mi Cuenta", myOrders: "Mis Pedidos", logout: "Cerrar Sesión", greeting: "Hola" },
+  en: { shop: "Shop", about: "About", menu: "Menu", account: "Account", search: "Search", langLabel: "EN", langFull: "English", myAccount: "My Account", myOrders: "My Orders", logout: "Sign Out", greeting: "Hello" },
 }
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isAccountOpen, setIsAccountOpen] = useState(false)
   const { lang, toggleLang } = useLang()
   const { setIsOpen, itemCount } = useCart()
+  const { user, profile, logout } = useAuth()
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsAccountOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  const initials = profile?.name
+    ? profile.name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase()
+    : "?"
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
@@ -76,13 +94,62 @@ export function Header() {
             >
               <Search className="w-5 h-5" />
             </button>
-            <Link
-              href="/account"
-              className="hidden sm:block p-2 text-foreground/70 hover:text-foreground boty-transition"
-              aria-label={t[lang].account}
-            >
-              <User className="w-5 h-5" />
-            </Link>
+            <div className="relative" ref={dropdownRef}>
+              {user ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsAccountOpen(!isAccountOpen)}
+                    className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-xs font-bold hover:opacity-90 boty-transition"
+                    aria-label={t[lang].account}
+                  >
+                    {initials}
+                  </button>
+                  {isAccountOpen && (
+                    <div className="absolute right-0 top-full mt-3 w-52 bg-white/95 backdrop-blur-md rounded-2xl border border-border/40 shadow-lg overflow-hidden z-50">
+                      <div className="px-4 py-3 border-b border-border/40">
+                        <p className="text-xs text-muted-foreground">{t[lang].greeting}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{profile?.name}</p>
+                      </div>
+                      <Link
+                        href="/cuenta"
+                        onClick={() => setIsAccountOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-foreground/80 hover:bg-muted boty-transition"
+                      >
+                        <UserCircle2 className="w-4 h-4" />
+                        {t[lang].myAccount}
+                      </Link>
+                      <Link
+                        href="/cuenta?tab=pedidos"
+                        onClick={() => setIsAccountOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-foreground/80 hover:bg-muted boty-transition"
+                      >
+                        <ClipboardList className="w-4 h-4" />
+                        {t[lang].myOrders}
+                      </Link>
+                      <div className="border-t border-border/40">
+                        <button
+                          type="button"
+                          onClick={() => { logout(); setIsAccountOpen(false) }}
+                          className="flex items-center gap-3 px-4 py-3 text-sm text-destructive hover:bg-muted w-full boty-transition"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          {t[lang].logout}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link
+                  href="/cuenta"
+                  className="hidden sm:block p-2 text-foreground/70 hover:text-foreground boty-transition"
+                  aria-label={t[lang].account}
+                >
+                  <User className="w-5 h-5" />
+                </Link>
+              )}
+            </div>
             <button
               type="button"
               onClick={() => setIsOpen(true)}
