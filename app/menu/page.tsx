@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Phone, Clock, Star } from "lucide-react"
 import { Header } from "@/components/boty/header"
+import { Logo } from "@/components/boty/logo"
 import { Footer } from "@/components/boty/footer"
 import { useLang } from "@/components/boty/language-context"
 
@@ -65,12 +66,9 @@ export default function MenuPage() {
                 {isEs ? "Taller y Delicias" : "Workshop & Delights"}
               </div>
 
-              <h1
-                className="font-serif text-5xl md:text-7xl mb-3 leading-tight"
-                style={{ color: "#3D2B1F" }}
-              >
-                Aleymi
-              </h1>
+              <div className="flex justify-center mb-4">
+                <Logo height={130} href={null} />
+              </div>
               <div
                 className="text-2xl md:text-3xl font-serif italic mb-6"
                 style={{ color: "#7DC9BF" }}

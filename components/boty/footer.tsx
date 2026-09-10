@@ -1,8 +1,10 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Instagram, Facebook, Twitter } from "lucide-react"
 import { useLang } from "./language-context"
+import { Logo } from "./logo"
 
 const footerLinks = {
   es: {
@@ -80,18 +82,23 @@ export function Footer() {
   const fl = footerLinks[lang]
   return (
     <footer className="bg-card pt-20 pb-10 relative overflow-hidden">
-      {/* Giant Background Text */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none select-none z-0">
-        <span className="font-serif text-[200px] sm:text-[200px] md:text-[400px] lg:text-[400px] xl:text-[400px] font-bold text-white/20 whitespace-nowrap leading-none">
-          Aleymi
-        </span>
+      {/* Marca de agua */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none select-none z-0 opacity-[0.06]">
+        <Image
+          src="/logo.png"
+          alt=""
+          width={480}
+          height={384}
+          className="object-contain max-w-[90vw]"
+          aria-hidden
+        />
       </div>
       
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <h2 className="font-serif text-3xl text-foreground mb-4">Aleymi</h2>
+            <Logo height={56} href={null} className="mb-4" />
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">
               {fl.tagline}
             </p>

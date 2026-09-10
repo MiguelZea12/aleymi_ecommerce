@@ -6,13 +6,14 @@ import { useSearchParams } from "next/navigation"
 import {
   UserCircle2, ClipboardList, LogOut, Loader2, Package,
   ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
+  Plus, Minus, Trash2,
 } from "lucide-react"
 import { Header } from "@/components/boty/header"
 import { Footer } from "@/components/boty/footer"
 import { useAuth } from "@/components/boty/auth-context"
 import { AuthPanel } from "@/components/boty/auth-forms"
-import { getOrdersByUser } from "@/lib/firestore"
-import type { Order } from "@/lib/types"
+import { getOrdersByUser, getProducts, updateOrderDetails } from "@/lib/firestore"
+import type { Order, OrderItem, Product } from "@/lib/types"
 
 const PAGE_SIZE = 5
 
@@ -41,6 +42,9 @@ function CuentaContent() {
   )
   const [orders, setOrders] = useState<Order[]>([])
   const [ordersLoading, setOrdersLoading] = useState(false)
+  const [ordersKey, setOrdersKey] = useState(0)
+
+  const reloadOrders = () => setOrdersKey((k) => k + 1)
 
   useEffect(() => {
     if (activeTab === "pedidos" && user) {
@@ -50,7 +54,7 @@ function CuentaContent() {
         .catch(console.error)
         .finally(() => setOrdersLoading(false))
     }
-  }, [activeTab, user])
+  }, [activeTab, user, ordersKey])
 
   if (authLoading) {
     return (
@@ -124,7 +128,7 @@ function CuentaContent() {
           </div>
 
           {activeTab === "perfil" && <PerfilTab profile={profile} onLogout={logout} />}
-          {activeTab === "pedidos" && <PedidosTab orders={orders} loading={ordersLoading} />}
+          {activeTab === "pedidos" && <PedidosTab orders={orders} loading={ordersLoading} onReload={reloadOrders} />}
         </div>
       </div>
       <Footer />
@@ -194,9 +198,320 @@ function PerfilTab({
 
 // ─── Pedidos paginados + colapsables ─────────────────────────────────────────
 
-function PedidosTab({ orders, loading }: { orders: Order[]; loading: boolean }) {
+// ─── Modal edición de pedido ─────────────────────────────────────────────────
+function EditOrderModal({
+  order,
+  onClose,
+  onSaved,
+}: {
+  order: Order
+  onClose: () => void
+  onSaved: () => void
+}) {
+  const [address, setAddress] = useState(order.customer.address)
+  const [city, setCity] = useState(order.customer.city)
+  const [notes, setNotes] = useState(order.customer.notes ?? "")
+  const [eventDate, setEventDate] = useState(order.customer.eventDate ?? "")
+  const [items, setItems] = useState<OrderItem[]>(order.items)
+  const [products, setProducts] = useState<Product[]>([])
+  const [showAddProduct, setShowAddProduct] = useState(false)
+  const [productSearch, setProductSearch] = useState("")
+  const [loadingProducts, setLoadingProducts] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState("")
+
+  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
+  const total = subtotal + order.shipping
+
+  useEffect(() => {
+    setLoadingProducts(true)
+    getProducts()
+      .then(setProducts)
+      .catch(console.error)
+      .finally(() => setLoadingProducts(false))
+  }, [])
+
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(productSearch.toLowerCase())
+  )
+
+  const changeQty = (index: number, delta: number) => {
+    setItems((prev) =>
+      prev.map((item, i) => {
+        if (i !== index) return item
+        return { ...item, quantity: Math.max(1, item.quantity + delta) }
+      })
+    )
+  }
+
+  const removeItem = (index: number) => {
+    if (items.length <= 1) {
+      setError("El pedido debe tener al menos un producto.")
+      return
+    }
+    setError("")
+    setItems((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const addProduct = (product: Product) => {
+    setError("")
+    const existingIdx = items.findIndex(
+      (i) => i.productId === product.id && !i.customization
+    )
+    if (existingIdx >= 0) {
+      changeQty(existingIdx, 1)
+    } else {
+      setItems((prev) => [
+        ...prev,
+        {
+          productId: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          image: product.image,
+        },
+      ])
+    }
+    setShowAddProduct(false)
+    setProductSearch("")
+  }
+
+  const handleSave = async () => {
+    if (!address.trim() || !city.trim()) {
+      setError("La dirección y ciudad son obligatorias.")
+      return
+    }
+    if (items.length === 0) {
+      setError("El pedido debe tener al menos un producto.")
+      return
+    }
+    setSaving(true)
+    try {
+      await updateOrderDetails(order.id!, {
+        address,
+        city,
+        notes,
+        eventDate,
+        items,
+        subtotal,
+        total,
+      })
+      onSaved()
+      onClose()
+    } catch {
+      setError("No se pudo guardar. Intenta de nuevo.")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 sm:p-0">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+
+      <div className="relative bg-card rounded-2xl p-6 w-full sm:max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto space-y-5">
+        <div className="flex items-center justify-between">
+          <h3 className="font-serif text-xl text-foreground">Modificar pedido</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted boty-transition text-muted-foreground"
+          >
+            ✕
+          </button>
+        </div>
+
+        <p className="text-sm text-muted-foreground">
+          Puedes cambiar productos, cantidades y datos de entrega mientras el pedido esté <strong>pendiente</strong>.
+        </p>
+
+        {/* ── Productos ── */}
+        <div className="space-y-3">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Productos</p>
+
+          {items.map((item, index) => (
+            <div
+              key={`${item.productId}-${index}`}
+              className="flex items-center gap-3 bg-background rounded-xl p-3 border border-border/50"
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
+                {item.customization && (
+                  <p className="text-xs text-muted-foreground">Bandeja personalizada</p>
+                )}
+                <p className="text-xs text-muted-foreground">S/{item.price.toFixed(2)} c/u</p>
+              </div>
+
+              {item.customization ? (
+                <span className="text-sm text-muted-foreground">×{item.quantity}</span>
+              ) : (
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => changeQty(index, -1)}
+                    disabled={item.quantity <= 1}
+                    className="w-7 h-7 flex items-center justify-center rounded-full border border-border hover:bg-muted boty-transition disabled:opacity-40"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-sm font-medium w-5 text-center">{item.quantity}</span>
+                  <button
+                    type="button"
+                    onClick={() => changeQty(index, 1)}
+                    className="w-7 h-7 flex items-center justify-center rounded-full border border-border hover:bg-muted boty-transition"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
+              <p className="text-sm font-medium text-foreground w-16 text-right">
+                S/{(item.price * item.quantity).toFixed(2)}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => removeItem(index)}
+                className="w-7 h-7 flex items-center justify-center rounded-full text-destructive hover:bg-destructive/10 boty-transition"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+
+          {/* Añadir producto */}
+          {!showAddProduct ? (
+            <button
+              type="button"
+              onClick={() => setShowAddProduct(true)}
+              className="w-full flex items-center justify-center gap-2 border border-dashed border-primary/40 rounded-xl py-2.5 text-sm font-medium text-primary hover:bg-primary/5 boty-transition"
+            >
+              <Plus className="w-4 h-4" />
+              Añadir producto
+            </button>
+          ) : (
+            <div className="border border-border rounded-xl p-3 space-y-2 bg-background">
+              <input
+                type="text"
+                value={productSearch}
+                onChange={(e) => setProductSearch(e.target.value)}
+                placeholder="Buscar producto…"
+                autoFocus
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+              <div className="max-h-40 overflow-y-auto space-y-1">
+                {loadingProducts ? (
+                  <div className="flex justify-center py-4">
+                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                  </div>
+                ) : filteredProducts.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-3">Sin resultados</p>
+                ) : (
+                  filteredProducts.map((product) => (
+                    <button
+                      key={product.id}
+                      type="button"
+                      onClick={() => addProduct(product)}
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-muted boty-transition text-left"
+                    >
+                      <span className="text-sm text-foreground truncate">{product.name}</span>
+                      <span className="text-sm font-medium text-primary ml-2 shrink-0">
+                        S/{product.price.toFixed(2)}
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => { setShowAddProduct(false); setProductSearch("") }}
+                className="text-xs text-muted-foreground hover:text-foreground boty-transition"
+              >
+                Cancelar
+              </button>
+            </div>
+          )}
+
+          {/* Total recalculado */}
+          <div className="flex justify-between text-sm pt-1 border-t border-border/40">
+            <span className="text-muted-foreground">Nuevo total</span>
+            <span className="font-bold text-foreground">S/{total.toFixed(2)}</span>
+          </div>
+        </div>
+
+        {/* ── Datos de entrega ── */}
+        <div className="space-y-4">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Entrega</p>
+          <div>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Dirección de entrega</label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Ciudad / Distrito</label>
+            <input
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Fecha del evento (opcional)</label>
+            <input
+              type="text"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              placeholder="Ej: 15 de octubre de 2026"
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Notas adicionales</label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={2}
+              placeholder="Instrucciones especiales, alergias, etc."
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+            />
+          </div>
+        </div>
+
+        {error && <p className="text-sm text-destructive">{error}</p>}
+
+        <div className="flex gap-3 sticky bottom-0 bg-card pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 border border-border rounded-xl py-2.5 text-sm font-medium text-foreground hover:bg-muted boty-transition"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 text-sm font-medium hover:bg-primary/90 boty-transition disabled:opacity-60"
+          >
+            {saving ? "Guardando…" : "Guardar cambios"}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Pedidos paginados + colapsables ─────────────────────────────────────────
+
+function PedidosTab({ orders, loading, onReload }: { orders: Order[]; loading: boolean; onReload: () => void }) {
   const [page, setPage] = useState(1)
   const [expanded, setExpanded] = useState<string | null>(null)
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null)
 
   const totalPages = Math.ceil(orders.length / PAGE_SIZE)
   const paginated = orders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
@@ -245,8 +560,8 @@ function PedidosTab({ orders, loading }: { orders: Order[]; loading: boolean }) 
             >
               <div className="flex items-center gap-4 min-w-0">
                 <div className="min-w-0">
-                  <p className="font-mono text-xs text-muted-foreground truncate max-w-[120px] sm:max-w-none">
-                    #{order.id?.slice(0, 8)}…
+                  <p className="font-mono text-xs text-muted-foreground truncate max-w-[160px] sm:max-w-none">
+                    {order.orderNumber ?? `#${order.id?.slice(0, 8)}…`}
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">{date} · {itemCount} {itemCount === 1 ? "producto" : "productos"}</p>
                 </div>
@@ -319,7 +634,20 @@ function PedidosTab({ orders, loading }: { orders: Order[]; loading: boolean }) 
                 )}
 
                 {/* ID completo */}
-                <p className="text-xs text-muted-foreground font-mono">ID: {order.id}</p>
+                <p className="text-xs text-muted-foreground font-mono">
+                  Pedido: {order.orderNumber ?? order.id}
+                </p>
+
+                {/* Botón modificar — solo si está pendiente */}
+                {order.status === "pendiente" && (
+                  <button
+                    type="button"
+                    onClick={() => setEditingOrder(order)}
+                    className="inline-flex items-center gap-2 text-sm font-medium text-primary border border-primary/30 rounded-full px-4 py-2 hover:bg-primary/5 boty-transition"
+                  >
+                    ✏️ Modificar pedido
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -351,6 +679,18 @@ function PedidosTab({ orders, loading }: { orders: Order[]; loading: boolean }) 
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+      )}
+
+      {/* Modal edición */}
+      {editingOrder && (
+        <EditOrderModal
+          order={editingOrder}
+          onClose={() => setEditingOrder(null)}
+          onSaved={() => {
+            setEditingOrder(null)
+            onReload()
+          }}
+        />
       )}
     </div>
   )

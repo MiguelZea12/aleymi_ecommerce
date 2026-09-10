@@ -1,0 +1,62 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Emails con acceso admin (app móvil de tu mamá)
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email in [
+        "alejandrozea79@gmail.com"
+      ];
+    }
+
+    // ─── Productos ───────────────────────────────────────────────────────────
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Pedidos ─────────────────────────────────────────────────────────────
+    match /orders/{orderId} {
+      // Cualquiera puede crear un pedido (checkout con o sin cuenta)
+      allow create: if true;
+
+      // Admin ve todos; cliente solo los suyos
+      allow read: if isAdmin()
+        || (isSignedIn() && resource.data.userId == request.auth.uid);
+
+      // Admin cambia estado; cliente edita datos solo si está pendiente
+      allow update: if isAdmin()
+        || (
+          isSignedIn()
+          && resource.data.userId == request.auth.uid
+          && resource.data.status == "pendiente"
+          && request.resource.data.status == "pendiente"
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    // ─── Contador de pedidos (número legible) ────────────────────────────────
+    match /counters/orders {
+      allow read: if true;
+      allow create, update: if true;
+    }
+
+    // ─── Perfiles de usuario ─────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ─── Config admin (push token, etc.) ─────────────────────────────────────
+    match /admin_config/{docId} {
+      // Lectura pública del push token para enviar notif al crear pedido desde web
+      allow read: if docId == "push_token" || isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

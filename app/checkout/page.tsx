@@ -4,8 +4,8 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import {
-  ChevronLeft, Banknote, Building2, Loader2, CheckCircle2,
-  Minus, Plus, Trash2,
+  ChevronLeft, ChevronRight, Banknote, Building2, Loader2, CheckCircle2,
+  Minus, Plus, Trash2, Copy, Check, Upload, X, FileImage, MapPin, CreditCard,
 } from "lucide-react"
 import { Header } from "@/components/boty/header"
 import { Footer } from "@/components/boty/footer"
@@ -13,7 +13,8 @@ import { useCart } from "@/components/boty/cart-context"
 import { useLang } from "@/components/boty/language-context"
 import { useAuth } from "@/components/boty/auth-context"
 import { AuthPanel } from "@/components/boty/auth-forms"
-import { createOrder } from "@/lib/firestore"
+import { createOrder, updateOrderVoucher } from "@/lib/firestore"
+import { uploadVoucher } from "@/lib/upload-voucher"
 import type { PaymentMethod, CustomerInfo, OrderItem } from "@/lib/types"
 
 const t = {
@@ -68,6 +69,21 @@ const t = {
     successMsg: "Tu pedido ha sido registrado. Te contactaremos pronto para confirmar los detalles.",
     orderId: "Número de pedido",
     continueShopping: "Seguir Comprando",
+    stepDelivery: "Entrega",
+    stepPayment: "Pago",
+    stepConfirm: "Confirmar",
+    stepOf: "Paso",
+    next: "Continuar",
+    stepBack: "Atrás",
+    transferTitle: "Realiza tu transferencia",
+    transferSubtitle: "Transfiere el monto exacto y sube el comprobante",
+    transferStep1: "Copia el número de cuenta",
+    transferStep2: "Transfiere desde tu banco",
+    transferStep3: "Sube el comprobante aquí",
+    reviewTitle: "Revisa tu pedido",
+    reviewPayment: "Método de pago",
+    reviewDelivery: "Entrega",
+    cashNote: "Pagarás en efectivo al momento de la entrega.",
   },
   en: {
     back: "Back to Shop",
@@ -118,6 +134,21 @@ const t = {
     successMsg: "Your order has been registered. We'll contact you soon to confirm the details.",
     orderId: "Order number",
     continueShopping: "Continue Shopping",
+    stepDelivery: "Delivery",
+    stepPayment: "Payment",
+    stepConfirm: "Confirm",
+    stepOf: "Step",
+    next: "Continue",
+    stepBack: "Back",
+    transferTitle: "Make your transfer",
+    transferSubtitle: "Transfer the exact amount and upload the receipt",
+    transferStep1: "Copy the account number",
+    transferStep2: "Transfer from your bank",
+    transferStep3: "Upload the receipt here",
+    reviewTitle: "Review your order",
+    reviewPayment: "Payment method",
+    reviewDelivery: "Delivery",
+    cashNote: "You will pay in cash upon delivery.",
   },
 }
 
@@ -268,10 +299,41 @@ function OrderFormPanel({
   const [notes, setNotes] = useState("")
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState("")
+  // Comprobante
+  const [voucherFile, setVoucherFile] = useState<File | null>(null)
+  const [voucherPreview, setVoucherPreview] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
+
+  const BANK = {
+    bank: "Banco Pichincha",
+    holder: "Aleymi",
+    type: "Cuenta de Ahorros",
+    number: "2210631764",     // ← pon el número real de cuenta de tu mamá
+    cci: "", // ← pon el CCI real
+  }
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(BANK.number)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleVoucherChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setVoucherFile(file)
+    setVoucherPreview(URL.createObjectURL(file))
+    const newErrors = { ...errors }
+    delete newErrors.voucher
+    setErrors(newErrors)
+  }
+
+  const [step, setStep] = useState<1 | 2 | 3>(1)
 
   const clearErr = (k: string) => setErrors((p) => { const n = { ...p }; delete n[k]; return n })
 
-  const validate = () => {
+  const validateStep1 = () => {
     const e: Record<string, string> = {}
     if (!address.trim()) e.address = tx.required
     if (!city.trim()) e.city = tx.required
@@ -279,9 +341,30 @@ function OrderFormPanel({
     return Object.keys(e).length === 0
   }
 
+  const validateStep2 = () => {
+    if (paymentMethod === "transferencia" && !voucherFile) {
+      setErrors({ voucher: "Debes subir el comprobante de transferencia." })
+      return false
+    }
+    setErrors({})
+    return true
+  }
+
+  const goNext = () => {
+    if (step === 1 && validateStep1()) setStep(2)
+    else if (step === 2 && validateStep2()) setStep(3)
+  }
+
+  const goBack = () => {
+    setErrors({})
+    if (step === 2) setStep(1)
+    else if (step === 3) setStep(2)
+  }
+
   const handleSubmit = async () => {
-    if (!validate()) return
+    if (!validateStep1() || !validateStep2()) return
     setSubmitting(true)
+    setSubmitError("")
     try {
       const customer: CustomerInfo = {
         name: profile?.name ?? "",
@@ -292,82 +375,335 @@ function OrderFormPanel({
       const orderItems: OrderItem[] = items.map((item) => ({
         productId: item.id, name: item.name, price: item.price, quantity: item.quantity, image: item.image,
       }))
-      const id = await createOrder({ items: orderItems, subtotal, shipping, total, paymentMethod, customer, userId })
+
+      // 1. Crear pedido primero (no bloquear por la subida del comprobante)
+      const { id, orderNumber } = await createOrder({
+        items: orderItems, subtotal, shipping, total,
+        paymentMethod, customer, userId,
+      })
+
+      // 2. Subir comprobante a Cloudinary
+      if (voucherFile) {
+        try {
+          const voucherUrl = await uploadVoucher(voucherFile, id)
+          await updateOrderVoucher(id, voucherUrl)
+        } catch (uploadErr) {
+          console.error("Error subiendo comprobante:", uploadErr)
+          setSubmitError(
+            `Tu pedido ${orderNumber} fue registrado, pero no se pudo subir el comprobante. Escríbenos por WhatsApp.`
+          )
+          clearCart()
+          onOrderSuccess(orderNumber)
+          return
+        }
+      }
+
       clearCart()
-      onOrderSuccess(id)
+      onOrderSuccess(orderNumber)
     } catch (e) {
       console.error(e)
+      const msg = e instanceof Error ? e.message : ""
+      setSubmitError(
+        msg.includes("permission") || msg.includes("Permission")
+          ? "Error de permisos en Firebase. Publica las reglas de Firestore actualizadas e intenta de nuevo."
+          : "No se pudo registrar el pedido. Verifica tu conexión e intenta de nuevo."
+      )
     } finally {
       setSubmitting(false)
     }
   }
 
+  const steps = [
+    { n: 1, label: tx.stepDelivery, icon: MapPin },
+    { n: 2, label: tx.stepPayment, icon: CreditCard },
+    { n: 3, label: tx.stepConfirm, icon: CheckCircle2 },
+  ] as const
+
   return (
-    <div className="space-y-10">
-      {/* Saludo con datos auto-completados */}
-      <section className="bg-card rounded-2xl p-6 boty-shadow">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-serif text-xl text-foreground">
-            {tx.hola}, {profile?.name?.split(" ")[0]}
-          </h2>
-          <button type="button" onClick={logout} className="text-xs text-muted-foreground hover:text-foreground underline boty-transition">
-            {tx.notYou}
-          </button>
+    <div className="space-y-6">
+      {/* Barra de progreso */}
+      <div className="bg-card rounded-2xl p-4 sm:p-5 boty-shadow">
+        <p className="text-xs text-muted-foreground mb-3">
+          {tx.stepOf} {step} / 3
+        </p>
+        <div className="flex items-center gap-0">
+          {steps.map((s, i) => {
+            const done = step > s.n
+            const active = step === s.n
+            return (
+              <div key={s.n} className="flex items-center flex-1 last:flex-none">
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center boty-transition ${
+                    done ? "bg-primary text-primary-foreground"
+                      : active ? "bg-primary text-primary-foreground ring-4 ring-primary/20"
+                      : "bg-muted text-muted-foreground"
+                  }`}>
+                    {done ? <Check className="w-4 h-4" /> : <s.icon className="w-4 h-4" />}
+                  </div>
+                  <span className={`text-[11px] font-medium hidden sm:block ${active || done ? "text-primary" : "text-muted-foreground"}`}>
+                    {s.label}
+                  </span>
+                </div>
+                {i < steps.length - 1 && (
+                  <div className={`flex-1 h-0.5 mx-2 mb-5 sm:mb-0 ${done ? "bg-primary" : "bg-border"}`} />
+                )}
+              </div>
+            )
+          })}
         </div>
-        <p className="text-xs text-muted-foreground mb-4">{tx.autoFilled}</p>
-        <div className="grid sm:grid-cols-3 gap-3">
-          <ReadField label={lang === "es" ? "Nombre" : "Name"} value={profile?.name ?? ""} />
-          <ReadField label={lang === "es" ? "Teléfono" : "Phone"} value={profile?.phone ?? ""} />
-          <ReadField label={lang === "es" ? "Correo" : "Email"} value={profile?.email ?? ""} />
-        </div>
-      </section>
+      </div>
 
-      {/* Datos del pedido */}
-      <section>
-        <h2 className="font-serif text-2xl text-foreground mb-6">{tx.orderTitle}</h2>
-        <div className="space-y-4">
-          <Field label={tx.address} value={address} onChange={(v) => { setAddress(v); clearErr("address") }} error={errors.address} />
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label={tx.city} value={city} onChange={(v) => { setCity(v); clearErr("city") }} error={errors.city} />
-            <Field label={tx.eventDate} value={eventDate} onChange={setEventDate} type="date" />
+      {/* ── PASO 1: Entrega ── */}
+      {step === 1 && (
+        <div className="bg-card rounded-2xl p-6 boty-shadow space-y-5 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-serif text-xl text-foreground">{tx.orderTitle}</h2>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {tx.hola}, {profile?.name?.split(" ")[0]}
+              </p>
+            </div>
+            <button type="button" onClick={logout} className="text-xs text-muted-foreground hover:text-foreground underline boty-transition shrink-0">
+              {tx.notYou}
+            </button>
           </div>
-          <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">{tx.notes}</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={tx.notesPlaceholder} rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 boty-transition resize-none"
-            />
+
+          <div className="grid sm:grid-cols-3 gap-2 p-3 bg-background rounded-xl border border-border/50">
+            <ReadField label={lang === "es" ? "Nombre" : "Name"} value={profile?.name ?? ""} />
+            <ReadField label={lang === "es" ? "Teléfono" : "Phone"} value={profile?.phone ?? ""} />
+            <ReadField label={lang === "es" ? "Correo" : "Email"} value={profile?.email ?? ""} />
+          </div>
+
+          <div className="space-y-4">
+            <Field label={tx.address} value={address} onChange={(v) => { setAddress(v); clearErr("address") }} error={errors.address} />
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label={tx.city} value={city} onChange={(v) => { setCity(v); clearErr("city") }} error={errors.city} />
+              <Field label={tx.eventDate} value={eventDate} onChange={setEventDate} type="date" />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">{tx.notes}</label>
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={tx.notesPlaceholder} rows={2}
+                className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 boty-transition resize-none"
+              />
+            </div>
           </div>
         </div>
-      </section>
+      )}
 
-      {/* Método de pago */}
-      <section>
-        <h2 className="font-serif text-2xl text-foreground mb-6">{tx.paymentTitle}</h2>
-        <div className="space-y-3">
-          {paymentMethods.map((pm) => (
-            <button key={pm.value} type="button" onClick={() => setPaymentMethod(pm.value)}
-              className={`w-full flex items-center gap-4 p-4 rounded-xl border boty-transition text-left ${
-                paymentMethod === pm.value ? "border-primary bg-primary/5 ring-2 ring-primary/20" : "border-border bg-card hover:border-primary/30"
-              }`}
-            >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${paymentMethod === pm.value ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-                <pm.icon className="w-5 h-5" />
+      {/* ── PASO 2: Pago ── */}
+      {step === 2 && (
+        <div className="space-y-4 animate-in fade-in duration-200">
+          <h2 className="font-serif text-xl text-foreground px-1">{tx.paymentTitle}</h2>
+
+          {/* Selector de método — compacto en fila */}
+          <div className="grid grid-cols-2 gap-3">
+            {paymentMethods.map((pm) => (
+              <button
+                key={pm.value}
+                type="button"
+                onClick={() => { setPaymentMethod(pm.value); setErrors({}) }}
+                className={`flex flex-col items-center gap-2 p-4 rounded-2xl border boty-transition ${
+                  paymentMethod === pm.value
+                    ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+                    : "border-border bg-card hover:border-primary/30"
+                }`}
+              >
+                <div className={`w-11 h-11 rounded-full flex items-center justify-center ${
+                  paymentMethod === pm.value ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                }`}>
+                  <pm.icon className="w-5 h-5" />
+                </div>
+                <p className="font-medium text-sm text-foreground text-center">{tx[pm.labelKey]}</p>
+              </button>
+            ))}
+          </div>
+
+          {/* Transferencia: flujo guiado */}
+          {paymentMethod === "transferencia" && (
+            <div className="bg-card rounded-2xl boty-shadow overflow-hidden">
+              {/* Header con monto a transferir */}
+              <div className="bg-primary px-6 py-5 text-primary-foreground">
+                <p className="text-xs opacity-80 uppercase tracking-wide mb-1">{tx.transferTitle}</p>
+                <p className="font-serif text-3xl font-bold">S/{total.toFixed(2)}</p>
+                <p className="text-xs opacity-70 mt-1">{tx.transferSubtitle}</p>
+              </div>
+
+              <div className="p-6 space-y-5">
+                {/* Paso 1: cuenta bancaria */}
+                <div className="flex gap-4">
+                  <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold shrink-0">1</div>
+                  <div className="flex-1 space-y-2">
+                    <p className="text-sm font-medium text-foreground">{tx.transferStep1}</p>
+                    <div className="bg-background border border-border rounded-xl p-4 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Banco</span>
+                        <span className="font-medium">{BANK.bank}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Titular</span>
+                        <span className="font-medium">{BANK.holder}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Tipo</span>
+                        <span className="font-medium">{BANK.type}</span>
+                      </div>
+                      {BANK.cci && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">CCI</span>
+                          <span className="font-mono font-medium">{BANK.cci}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                        <div>
+                          <p className="text-xs text-muted-foreground">N° de cuenta</p>
+                          <p className="font-mono font-bold text-lg text-foreground tracking-wide">{BANK.number}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleCopy}
+                          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium boty-transition ${
+                            copied ? "bg-green-100 text-green-700" : "bg-primary text-primary-foreground hover:bg-primary/90"
+                          }`}
+                        >
+                          {copied ? <><Check className="w-4 h-4" /> Copiado</> : <><Copy className="w-4 h-4" /> Copiar</>}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Paso 2: instrucción */}
+                <div className="flex gap-4">
+                  <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold shrink-0">2</div>
+                  <p className="text-sm text-foreground pt-1">{tx.transferStep2}</p>
+                </div>
+
+                {/* Paso 3: comprobante */}
+                <div className="flex gap-4">
+                  <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold shrink-0">3</div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-foreground mb-3">{tx.transferStep3}</p>
+                    {voucherPreview ? (
+                      <div className="relative rounded-xl overflow-hidden border border-border">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={voucherPreview} alt="Comprobante" className="w-full max-h-44 object-contain bg-muted" />
+                        <button
+                          type="button"
+                          onClick={() => { setVoucherFile(null); setVoucherPreview(null) }}
+                          className="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                        <div className="px-4 py-2 flex items-center gap-2 bg-background border-t border-border">
+                          <FileImage className="w-4 h-4 text-primary" />
+                          <span className="text-xs truncate">{voucherFile?.name}</span>
+                          <Check className="w-4 h-4 text-green-600 ml-auto shrink-0" />
+                        </div>
+                      </div>
+                    ) : (
+                      <label className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl px-6 py-7 cursor-pointer boty-transition ${
+                        errors.voucher ? "border-destructive bg-destructive/5" : "border-primary/30 hover:border-primary hover:bg-primary/5"
+                      }`}>
+                        <Upload className="w-6 h-6 text-primary" />
+                        <span className="text-sm font-medium text-foreground">Toca para subir comprobante</span>
+                        <span className="text-xs text-muted-foreground">JPG, PNG o PDF</span>
+                        <input type="file" accept="image/*,application/pdf" className="sr-only" onChange={handleVoucherChange} />
+                      </label>
+                    )}
+                    {errors.voucher && <p className="text-xs text-destructive mt-2">{errors.voucher}</p>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Efectivo: mensaje simple */}
+          {paymentMethod === "efectivo" && (
+            <div className="bg-card rounded-2xl p-6 boty-shadow flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Banknote className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="font-medium text-foreground">{tx[pm.labelKey]}</p>
-                <p className="text-sm text-muted-foreground">{tx[pm.descKey]}</p>
+                <p className="font-medium text-foreground">{tx.efectivo}</p>
+                <p className="text-sm text-muted-foreground mt-0.5">{tx.cashNote}</p>
+                <p className="text-lg font-bold text-primary mt-1">S/{total.toFixed(2)}</p>
               </div>
-            </button>
-          ))}
+            </div>
+          )}
         </div>
-      </section>
+      )}
 
-      {/* Botón confirmar */}
-      <button type="button" onClick={handleSubmit} disabled={submitting}
-        className="w-full bg-primary text-primary-foreground py-4 rounded-full font-medium hover:bg-primary/90 boty-transition disabled:opacity-50 flex items-center justify-center gap-2"
-      >
-        {submitting ? <><Loader2 className="w-4 h-4 animate-spin" />{tx.processing}</> : tx.placeOrder}
-      </button>
+      {/* ── PASO 3: Confirmar ── */}
+      {step === 3 && (
+        <div className="bg-card rounded-2xl p-6 boty-shadow space-y-5 animate-in fade-in duration-200">
+          <h2 className="font-serif text-xl text-foreground">{tx.reviewTitle}</h2>
+
+          <div className="space-y-3">
+            <div className="p-4 bg-background rounded-xl border border-border/50">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">{tx.reviewDelivery}</p>
+              <p className="text-sm font-medium">{address}, {city}</p>
+              {eventDate && <p className="text-xs text-muted-foreground mt-1">{tx.eventDate}: {eventDate}</p>}
+              {notes && <p className="text-xs text-muted-foreground mt-1 italic">{notes}</p>}
+            </div>
+
+            <div className="p-4 bg-background rounded-xl border border-border/50">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">{tx.reviewPayment}</p>
+              <p className="text-sm font-medium">{tx[paymentMethod === "transferencia" ? "transferencia" : "efectivo"]}</p>
+              {paymentMethod === "transferencia" && voucherFile && (
+                <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5" /> Comprobante adjunto
+                </p>
+              )}
+            </div>
+
+            <div className="flex justify-between items-center p-4 bg-primary/5 rounded-xl border border-primary/20">
+              <span className="font-medium text-foreground">{tx.total}</span>
+              <span className="font-serif text-2xl font-bold text-primary">S/{total.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {submitError && (
+        <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-xl px-4 py-3">
+          {submitError}
+        </p>
+      )}
+
+      {/* Navegación */}
+      <div className={`pt-2 ${step > 1 ? "grid grid-cols-2 gap-3" : ""}`}>
+        {step > 1 && (
+          <button
+            type="button"
+            onClick={goBack}
+            disabled={submitting}
+            className="flex items-center justify-center gap-1.5 px-5 py-3.5 rounded-full border border-border text-sm font-medium text-foreground hover:bg-muted boty-transition"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            {tx.stepBack}
+          </button>
+        )}
+
+        {step < 3 ? (
+          <button
+            type="button"
+            onClick={goNext}
+            className={`flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3.5 px-8 rounded-full font-medium hover:bg-primary/90 boty-transition ${step > 1 ? "" : "w-full max-w-sm mx-auto"}`}
+          >
+            {tx.next}
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={submitting}
+            className="flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3.5 px-8 rounded-full font-medium hover:bg-primary/90 boty-transition disabled:opacity-50"
+          >
+            {submitting ? <><Loader2 className="w-4 h-4 animate-spin" />{tx.processing}</> : tx.placeOrder}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

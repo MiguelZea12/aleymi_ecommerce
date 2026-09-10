@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { Sparkles, ChefHat, Flower2, Globe, Clock } from "lucide-react"
 import { useLang } from "./language-context"
+import { Logo } from "./logo"
 
 const featuresData = {
   es: [
@@ -157,24 +158,15 @@ export function FeatureSection() {
             </div>
           </div>
 
-          {/* Top Right - 100% Natural */}
+          {/* Top Right - 100% Artesanal */}
           <div 
-            className={`rounded-3xl p-6 md:p-8 flex flex-col justify-center md:col-span-2 relative overflow-hidden transition-all duration-700 ease-out ${
+            className={`rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 md:col-span-2 relative overflow-hidden transition-all duration-700 ease-out ${
               isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
-            style={{ transitionDelay: '100ms' }}
+            style={{ transitionDelay: '100ms', background: 'linear-gradient(135deg, #FDEDF0 0%, #F5E6E8 100%)' }}
           >
-            {/* Background Image */}
-            <Image
-              src="/naturales2.jpg  "
-              alt="Natural ingredients"
-              fill
-              className="object-cover"
-            />
-
-            
-            <div className="relative z-10">
-              <h3 className="text-3xl md:text-4xl text-black mb-2">
+            <div className="relative z-10 flex-1">
+              <h3 className="text-3xl md:text-4xl text-black mb-2 font-semibold">
                 {tx.bentoTitle}
               </h3>
               <h3 className="text-2xl md:text-3xl text-black/70 mb-4">
@@ -195,6 +187,10 @@ export function FeatureSection() {
                   <span>{tx.bullet3}</span>
                 </div>
               </div>
+            </div>
+
+            <div className="relative z-10 shrink-0">
+              <Logo height={150} href={null} />
             </div>
           </div>
 

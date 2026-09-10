@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Menu, X, ShoppingBag, Search, User, Globe, LogOut, ClipboardList, UserCircle2 } from "lucide-react"
 import { CartDrawer } from "./cart-drawer"
+import { Logo } from "./logo"
 import { useCart } from "./cart-context"
 import { useLang } from "./language-context"
 import { useAuth } from "./auth-context"
@@ -72,9 +73,9 @@ export function Header() {
           </div>
 
           {/* Logo */}
-          <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-            <h1 className="font-serif text-3xl tracking-wider text-foreground">Aleymi</h1>
-          </Link>
+          <div className="absolute left-1/2 -translate-x-1/2">
+            <Logo height={40} priority />
+          </div>
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">

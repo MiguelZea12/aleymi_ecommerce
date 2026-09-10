@@ -43,6 +43,7 @@ export type OrderStatus = "pendiente" | "confirmado" | "en_preparacion" | "listo
 
 export interface Order {
   id?: string
+  orderNumber?: string   // ej: 0001-0001-000000042
   userId?: string
   items: OrderItem[]
   subtotal: number
@@ -51,6 +52,7 @@ export interface Order {
   paymentMethod: PaymentMethod
   status: OrderStatus
   customer: CustomerInfo
+  voucherUrl?: string       // URL del comprobante de transferencia
   createdAt: Date
   updatedAt: Date
 }
