@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  const key = process.env.RESEND_API_KEY
+  if (!key) return null
+  return new Resend(key)
+}
 
 // Textos por estado
 const STATUS_COPY: Record<string, { subject: string; heading: string; body: string; emoji: string }> = {
@@ -130,7 +134,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ skipped: true })
     }
 
-    if (!process.env.RESEND_API_KEY) {
+    const resend = getResend()
+    if (!resend) {
       console.warn("RESEND_API_KEY no configurado — email no enviado")
       return NextResponse.json({ skipped: true, reason: "no_api_key" })
     }
