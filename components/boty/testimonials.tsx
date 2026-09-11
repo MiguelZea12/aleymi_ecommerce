@@ -8,7 +8,7 @@ const testimonialsData = {
   es: [
     { id: 1, name: "Alejandro Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Los bocaditos de Aleymi hicieron que mi reunión fuera un éxito total. Pedí la bandeja completa y todos querían saber dónde la conseguí.", product: "Bandeja Completa" },
     { id: 2, name: "Alejandra Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Por fin encontré bocaditos que saben caseros de verdad. Las empanadillas son mis favoritas, siempre las pido.", product: "Mini Empanadillas" },
-    { id: 3, name: "Anthonella C.", location: "Portoviejo, Ecuador", rating: 5, text: "Las tartaletas de camarón son espectaculares. La presentación es hermosa y el sabor es increíble.", product: "Tartaletas" },
+    { id: 3, name: "Melany L.", location: "Portoviejo, Ecuador", rating: 5, text: "Las tartaletas de camarón son espectaculares. La presentación es hermosa y el sabor es increíble.", product: "Tartaletas" },
     { id: 4, name: "Aldair T.", location: "Portoviejo, Ecuador", rating: 5, text: "Pedí la bandeja completa para un evento corporativo y todos quedaron encantados. La calidad es insuperable.", product: "Bandeja Completa" },
     { id: 5, name: "Malena P.", location: "Portoviejo, Ecuador", rating: 5, text: "Las mini hamburguesas son perfectas para mis reuniones. Todo fresco y artesanal, la presentación impecable.", product: "Mini Hamburguesas" },
     { id: 6, name: "Miguel Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Los mini sanduchitos son perfectos para las reuniones del trabajo. Siempre pido de más porque vuelan.", product: "Mini Sanduchitos" },
@@ -19,7 +19,7 @@ const testimonialsData = {
   en: [
     { id: 1, name: "Alejandro Z.", location: "Portoviejo, Ecuador", rating: 5, text: "Aleymi's bites made my meeting a total success. I ordered the full tray and everyone wanted to know where I got it.", product: "Full Tray" },
     { id: 2, name: "Alejandra Z.", location: "Portoviejo, Ecuador", rating: 5, text: "I finally found bites that truly taste homemade. The empanadas are my favorites, I always order them.", product: "Mini Empanadas" },
-    { id: 3, name: "Anthonella C.", location: "Portoviejo, Ecuador", rating: 5, text: "The shrimp tartlets are spectacular. The presentation is beautiful and the flavor is amazing.", product: "Tartlets" },
+    { id: 3, name: "Melany L.", location: "Portoviejo, Ecuador", rating: 5, text: "The shrimp tartlets are spectacular. The presentation is beautiful and the flavor is amazing.", product: "Tartlets" },
     { id: 4, name: "Aldair T.", location: "Portoviejo, Ecuador", rating: 5, text: "I ordered the full tray for a corporate event and everyone was delighted. The quality is unmatched.", product: "Full Tray" },
     { id: 5, name: "Malena P.", location: "Portoviejo, Ecuador", rating: 5, text: "The mini burgers are perfect for my gatherings. Everything fresh and artisan, presentation impeccable.", product: "Mini Burgers" },
     { id: 6, name: "Miguel Z.", location: "Portoviejo, Ecuador", rating: 5, text: "The mini sandwiches are perfect for work meetings. I always order extra because they fly.", product: "Mini Sandwiches" },
